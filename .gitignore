@@ -1,9 +1,10 @@
 # Backend
-backend/venv/
+backend/myvenv/
 backend/.env
 backend/__pycache__/
 backend/staticfiles/
 backend/media/
+backend/readme1.md 
 
 # Frontend
 frontend/node_modules/

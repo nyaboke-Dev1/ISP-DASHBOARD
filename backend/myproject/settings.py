@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'packages',
     'payments',
     'tickets',
+    'AuditLog',
 ]
 
 MIDDLEWARE = [
