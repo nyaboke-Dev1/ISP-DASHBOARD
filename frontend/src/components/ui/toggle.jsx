@@ -1,5 +1,3 @@
-"use strict";
-import { jsx } from "react/jsx-runtime";
 import * as TogglePrimitive from "@radix-ui/react-toggle";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
@@ -29,13 +27,10 @@ function Toggle({
   size,
   ...props
 }) {
-  return /* @__PURE__ */ jsx(
-    TogglePrimitive.Root,
-    {
-      "data-slot": "toggle",
-      className: cn(toggleVariants({ variant, size, className })),
-      ...props
-    }
-  );
+  return <TogglePrimitive.Root
+    data-slot="toggle"
+    className={cn(toggleVariants({ variant, size, className }))}
+    {...props}
+  />;
 }
 export { Toggle, toggleVariants };

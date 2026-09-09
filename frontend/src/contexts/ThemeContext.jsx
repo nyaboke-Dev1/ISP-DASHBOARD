@@ -1,5 +1,3 @@
-"use strict";
-import { jsx } from "react/jsx-runtime";
 import { createContext, useContext, useEffect, useState } from "react";
 const ThemeContext = createContext(void 0);
 export function ThemeProvider({
@@ -28,7 +26,9 @@ export function ThemeProvider({
   const toggleTheme = switchable ? () => {
     setTheme((prev) => prev === "light" ? "dark" : "light");
   } : void 0;
-  return /* @__PURE__ */ jsx(ThemeContext.Provider, { value: { theme, toggleTheme, switchable }, children });
+  return <ThemeContext.Provider value={{ theme, toggleTheme, switchable }}>
+      {children}
+    </ThemeContext.Provider>;
 }
 export function useTheme() {
   const context = useContext(ThemeContext);

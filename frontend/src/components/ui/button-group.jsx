@@ -1,5 +1,3 @@
-"use strict";
-import { jsx } from "react/jsx-runtime";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
@@ -23,16 +21,13 @@ function ButtonGroup({
   orientation,
   ...props
 }) {
-  return /* @__PURE__ */ jsx(
-    "div",
-    {
-      role: "group",
-      "data-slot": "button-group",
-      "data-orientation": orientation,
-      className: cn(buttonGroupVariants({ orientation }), className),
-      ...props
-    }
-  );
+  return <div
+    role="group"
+    data-slot="button-group"
+    data-orientation={orientation}
+    className={cn(buttonGroupVariants({ orientation }), className)}
+    {...props}
+  />;
 }
 function ButtonGroupText({
   className,
@@ -40,34 +35,28 @@ function ButtonGroupText({
   ...props
 }) {
   const Comp = asChild ? Slot : "div";
-  return /* @__PURE__ */ jsx(
-    Comp,
-    {
-      className: cn(
-        "bg-muted flex items-center gap-2 rounded-md border px-4 text-sm font-medium shadow-xs [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
-        className
-      ),
-      ...props
-    }
-  );
+  return <Comp
+    className={cn(
+      "bg-muted flex items-center gap-2 rounded-md border px-4 text-sm font-medium shadow-xs [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
+      className
+    )}
+    {...props}
+  />;
 }
 function ButtonGroupSeparator({
   className,
   orientation = "vertical",
   ...props
 }) {
-  return /* @__PURE__ */ jsx(
-    Separator,
-    {
-      "data-slot": "button-group-separator",
-      orientation,
-      className: cn(
-        "bg-input relative !m-0 self-stretch data-[orientation=vertical]:h-auto",
-        className
-      ),
-      ...props
-    }
-  );
+  return <Separator
+    data-slot="button-group-separator"
+    orientation={orientation}
+    className={cn(
+      "bg-input relative !m-0 self-stretch data-[orientation=vertical]:h-auto",
+      className
+    )}
+    {...props}
+  />;
 }
 export {
   ButtonGroup,

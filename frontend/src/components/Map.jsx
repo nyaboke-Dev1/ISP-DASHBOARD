@@ -1,5 +1,3 @@
-"use strict";
-import { jsx } from "react/jsx-runtime";
 import { useEffect, useRef } from "react";
 import { usePersistFn } from "@/hooks/usePersistFn";
 import { cn } from "@/lib/utils";
@@ -52,5 +50,5 @@ export function MapView({
   useEffect(() => {
     init();
   }, [init]);
-  return /* @__PURE__ */ jsx("div", { ref: mapContainer, className: cn("w-full h-[500px]", className) });
+  return <div ref={mapContainer} className={cn("w-full h-[500px]", className)} />;
 }

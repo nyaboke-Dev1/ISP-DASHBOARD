@@ -1,79 +1,102 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/**
+ * Signal Atlas design reminder: warm fog grounds; Signal Cobalt is reserved for
+ * active routing; Space Grotesk creates the operational voice; DM Sans supports readable detail.
+ */
 @import "tailwindcss";
+@import "tw-animate-css";
 
-/* ── Hard reset — clears everything fighting the dashboard ── */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }
 
-html {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-  background: #f8fafc;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  color-scheme: light;
+:root {
+  --radius: 0.75rem;
+  --background: oklch(0.97 0.004 262);
+  --foreground: oklch(0.24 0.035 258);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.24 0.035 258);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.24 0.035 258);
+  --primary: oklch(0.5 0.22 264);
+  --primary-foreground: oklch(0.99 0.005 264);
+  --secondary: oklch(0.95 0.01 258);
+  --secondary-foreground: oklch(0.32 0.03 258);
+  --muted: oklch(0.95 0.01 258);
+  --muted-foreground: oklch(0.57 0.025 258);
+  --accent: oklch(0.93 0.04 264);
+  --accent-foreground: oklch(0.35 0.17 264);
+  --destructive: oklch(0.61 0.19 29);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.9 0.012 258);
+  --input: oklch(0.9 0.012 258);
+  --ring: oklch(0.5 0.22 264);
+  --chart-1: oklch(0.5 0.22 264);
+  --chart-2: oklch(0.69 0.12 174);
+  --chart-3: oklch(0.78 0.15 78);
+  --chart-4: oklch(0.65 0.18 29);
+  --chart-5: oklch(0.58 0.07 258);
+  --sidebar: oklch(0.99 0.002 258);
+  --sidebar-foreground: oklch(0.24 0.035 258);
+  --sidebar-primary: oklch(0.5 0.22 264);
+  --sidebar-primary-foreground: oklch(0.99 0.005 264);
+  --sidebar-accent: oklch(0.94 0.028 264);
+  --sidebar-accent-foreground: oklch(0.35 0.17 264);
+  --sidebar-border: oklch(0.9 0.012 258);
+  --sidebar-ring: oklch(0.5 0.22 264);
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: #f8fafc;
-  color: #0f172a;
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  font-size: 14px;
+* { border-color: var(--border); }
+html { scroll-behavior: smooth; }
+body { margin: 0; min-width: 320px; background: #f4f5f8; color: #14213d; font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif; }
+button, input, select, textarea { font: inherit; }
+button:not(:disabled), [role="button"]:not([aria-disabled="true"]), a[href], select:not(:disabled), input[type="checkbox"]:not(:disabled) { cursor: pointer; }
+h1, h2, h3, h4, .font-display { font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif; }
+::selection { background: #c9d9ff; color: #14213d; }
+
+@media (prefers-reduced-motion: no-preference) {
+  a, button, input, select { transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1); }
 }
 
-/* ── Root must be full width — NO centering, NO border, NO fixed width ── */
-#root {
-  width: 100% !important;
-  max-width: 100% !important;
-  min-height: 100vh;
-  margin: 0 !important;
-  padding: 0 !important;
-  text-align: left !important;
-  border: none !important;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ── Remove all heading overrides — let Tailwind control sizes ── */
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  font-weight: 600;
-  line-height: 1.25;
-  color: inherit;
-  font-size: inherit;
-  margin: 0;
-  letter-spacing: normal;
-}
-
-p { margin: 0; }
-
-button, input, select, textarea {
-  font: inherit;
-}
-
-button { cursor: pointer; }
-
-:focus-visible {
-  outline: 2px solid rgba(37, 99, 235, 0.35);
-  outline-offset: 2px;
-}
-
-/* ── Thin scrollbar ── */
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    transition-duration: .01ms !important;
-    animation-duration: .01ms !important;
-  }
+@layer components {
+  .container { width: 100%; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+  .flex { min-width: 0; min-height: 0; }
 }

@@ -1,5 +1,3 @@
-"use strict";
-import { jsx } from "react/jsx-runtime";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
@@ -26,13 +24,10 @@ function Badge({
   ...props
 }) {
   const Comp = asChild ? Slot : "span";
-  return /* @__PURE__ */ jsx(
-    Comp,
-    {
-      "data-slot": "badge",
-      className: cn(badgeVariants({ variant }), className),
-      ...props
-    }
-  );
+  return <Comp
+    data-slot="badge"
+    className={cn(badgeVariants({ variant }), className)}
+    {...props}
+  />;
 }
 export { Badge, badgeVariants };
