@@ -64,7 +64,7 @@ const pageMeta = {
 export function BrandMark({ inverse = false, compact = false }) {
   return <span className="flex items-center gap-3">
       <span className={`grid h-10 w-10 place-items-center rounded-[13px] ${inverse ? "bg-white/12" : "bg-[#1758e8]/10"}`}>
-        <img src="/manus-storage/northline-route-mark_ef41e5f5.png" alt="Northline routing mark" className="h-7 w-7 object-contain" />
+        <img src="/northline-route-mark.png" alt="Northline routing mark" className="h-7 w-7 object-contain" />
       </span>
       {!compact && <span className="leading-none">
           <span className={`block text-[15px] font-bold tracking-[-0.06em] ${inverse ? "text-white" : "text-[#14213d]"}`}>NORTHLINE</span>
