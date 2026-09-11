@@ -1,4 +1,5 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+// app.jsx
+import { Navigate, Route, Routes } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -7,7 +8,6 @@ import NotFound from "./pages/NotFound";
 import { LoginPage, RegisterPage } from "./pages/Auth";
 import Console from "./pages/Console";
 import Marketing from "./pages/Marketing";
-
 const sectionRoutes = [
   ["/dashboard", "dashboard"],
   ["/clients", "clients"],
@@ -34,18 +34,18 @@ function AppRoutes() {
     </Routes>
   );
 }
-
 export default function App() {
   return (
     <ErrorBoundary>
-      <BrowserRouter>
         <ThemeProvider defaultTheme="light">
           <TooltipProvider>
             <Toaster position="top-right" richColors />
             <AppRoutes />
           </TooltipProvider>
         </ThemeProvider>
-      </BrowserRouter>
     </ErrorBoundary>
   );
 }
+
+
+

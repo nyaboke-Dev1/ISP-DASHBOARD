@@ -15,7 +15,7 @@ import {
   SlidersHorizontal,
   Users
 } from "lucide-react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 const navGroups = [
   {
     label: "Command",
@@ -67,19 +67,19 @@ export function BrandMark({ inverse = false, compact = false }) {
         <img src="/northline-route-mark.png" alt="Northline routing mark" className="h-7 w-7 object-contain" />
       </span>
       {!compact && <span className="leading-none">
-          <span className={`block text-[15px] font-bold tracking-[-0.06em] ${inverse ? "text-white" : "text-[#14213d]"}`}>NORTHLINE</span>
-          <span className={`mt-1 block text-[9px] font-bold tracking-[0.24em] ${inverse ? "text-white/55" : "text-[#6d7890]"}`}>SIGNAL ATLAS</span>
+          <span className={`block text-[15px] font-bold tracking-[-0.06em] ${inverse ? "text-white" : "text-[#14213d]"}`}>Swift-Net</span>
+          <span className={`mt-1 block text-[9px] font-bold tracking-[0.24em] ${inverse ? "text-white/55" : "text-[#6d7890]"}`}>ADMIN</span>
         </span>}
     </span>;
 }
 export function AppShell({ section, children }) {
-  const [location] = useLocation();
+  const location = useLocation();
   const page = pageMeta[section];
   const quickNav = navGroups.flatMap((group) => group.items);
   return <div className="min-h-screen bg-[#f4f5f8] text-[#14213d] md:flex">
       <aside className="sticky top-0 z-30 hidden h-screen w-[272px] shrink-0 flex-col border-r border-white/10 bg-[#101d35] md:flex">
         <div className="relative flex h-[94px] items-center border-b border-white/10 px-7 before:absolute before:bottom-0 before:left-0 before:h-px before:w-14 before:bg-[#1758e8]">
-          <Link href="/dashboard" aria-label="Open command overview"><BrandMark inverse /></Link>
+          <Link to="/dashboard" aria-label="Open command overview"><BrandMark inverse /></Link>
         </div>
         <nav className="flex-1 overflow-y-auto px-4 py-6" aria-label="Primary navigation">
           {navGroups.map((group) => <div key={group.label} className="mb-6 last:mb-0">
@@ -87,10 +87,10 @@ export function AppShell({ section, children }) {
               <div className="space-y-1">
                 {group.items.map((item) => {
     const Icon = item.icon;
-    const active = location === item.path;
+    const active = location.pathname === item.path;
     return <Link
       key={item.path}
-      href={item.path}
+      to={item.path}
       className={`group relative flex h-11 items-center gap-3 rounded-lg px-3 text-[13px] font-semibold transition-all duration-200 ${active ? "bg-white/10 text-white" : "text-[#a8b7d1] hover:bg-white/[0.055] hover:text-white"}`}
     >
                       {active && <span className="absolute left-0 h-5 w-[3px] rounded-r-full bg-[#1758e8]" />}
@@ -115,7 +115,7 @@ export function AppShell({ section, children }) {
       <main className="min-w-0 flex-1 bg-[#f4f5f8] [background-image:linear-gradient(rgba(23,88,232,0.026)_1px,transparent_1px),linear-gradient(90deg,rgba(23,88,232,0.026)_1px,transparent_1px)] [background-size:42px_42px]">
         <header className="sticky top-0 z-20 border-b border-[#dfe4ed] bg-[#f4f5f8]/95 backdrop-blur-xl">
           <div className="flex min-h-[94px] items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-10">
-            <div className="flex items-center gap-3 md:hidden"><Link href="/dashboard"><BrandMark compact /></Link></div>
+            <div className="flex items-center gap-3 md:hidden"><Link to="/dashboard"><BrandMark compact /></Link></div>
             <div className="hidden min-w-0 md:block">
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1758e8]"><span className="mr-2 inline-block h-2 w-[3px] bg-[#1758e8] align-middle" />{page.code}</p>
               <h1 className="mt-1 text-xl font-bold tracking-[-0.045em] text-[#14213d] sm:text-[22px]">{page.title}</h1>
@@ -133,8 +133,8 @@ export function AppShell({ section, children }) {
           <div className="flex gap-1 overflow-x-auto border-t border-[#e7eaf0] px-4 py-2 md:hidden">
             {quickNav.map((item) => {
     const Icon = item.icon;
-    const active = location === item.path;
-    return <Link key={item.path} href={item.path} className={`flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-bold ${active ? "bg-[#e9f0ff] text-[#1758e8]" : "text-[#68758b]"}`}><Icon className="h-3.5 w-3.5" />{item.label}</Link>;
+    const active = location.pathname === item.path;
+    return <Link key={item.path} to={item.path} className={`flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-bold ${active ? "bg-[#e9f0ff] text-[#1758e8]" : "text-[#68758b]"}`}><Icon className="h-3.5 w-3.5" />{item.label}</Link>;
   })}
           </div>
         </header>

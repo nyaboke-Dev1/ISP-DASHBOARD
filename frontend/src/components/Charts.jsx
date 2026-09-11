@@ -21,7 +21,17 @@ const utilizationData = [
 ];
 const paymentData = [{ name: "Captured", value: 71, color: "#1758e8" }, { name: "Pending", value: 17, color: "#f1b64e" }, { name: "Exceptions", value: 12, color: "#e66759" }];
 export function RevenueChart() {
-  return <div className="h-[240px] w-full"><ResponsiveContainer width="100%" height="100%"><AreaChart data={revenueData} margin={{ left: -18, right: 3, top: 12, bottom: 0 }}><defs><linearGradient id="revenueGlow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#1758e8" stopOpacity={0.22} /><stop offset="100%" stopColor="#1758e8" stopOpacity={0} /></linearGradient></defs><XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: "#94a0b4", fontSize: 10 }} dy={7} /><YAxis axisLine={false} tickLine={false} tick={{ fill: "#94a0b4", fontSize: 10 }} tickFormatter={(value) => `$${value}k`} /><Tooltip contentStyle={tooltipStyle} formatter={(value) => [`$${value}k`, ""]} labelFormatter={(label) => `August ${label}`} /><Area type="monotone" dataKey="revenue" stroke="#1758e8" strokeWidth={2.5} fill="url(#revenueGlow)" /><Area type="monotone" dataKey="collections" stroke="#6ee7c8" strokeWidth={1.8} strokeDasharray="4 4" fill="transparent" /></AreaChart></ResponsiveContainer></div>;
+  return (<div className="h-[240px] w-full min-w-0">
+    <ResponsiveContainer 
+      width="100%"
+      height="100%"
+      minWidth={1}
+      minHeight={240}>
+    <AreaChart 
+    data={revenueData} 
+    margin={{ left: -18, right: 3, top: 12, bottom: 0 }}>
+      
+    <defs><linearGradient id="revenueGlow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#1758e8" stopOpacity={0.22} /><stop offset="100%" stopColor="#1758e8" stopOpacity={0} /></linearGradient></defs><XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: "#94a0b4", fontSize: 10 }} dy={7} /><YAxis axisLine={false} tickLine={false} tick={{ fill: "#94a0b4", fontSize: 10 }} tickFormatter={(value) => `$${value}k`} /><Tooltip contentStyle={tooltipStyle} formatter={(value) => [`$${value}k`, ""]} labelFormatter={(label) => `August ${label}`} /><Area type="monotone" dataKey="revenue" stroke="#1758e8" strokeWidth={2.5} fill="url(#revenueGlow)" /><Area type="monotone" dataKey="collections" stroke="#6ee7c8" strokeWidth={1.8} strokeDasharray="4 4" fill="transparent" /></AreaChart></ResponsiveContainer></div>);
 }
 export function UtilizationChart() {
   return <div className="h-[205px] w-full"><ResponsiveContainer width="100%" height="100%"><AreaChart data={utilizationData} margin={{ left: -24, right: 2, top: 10, bottom: 0 }}><defs><linearGradient id="utilGlow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#6ee7c8" stopOpacity={0.38} /><stop offset="100%" stopColor="#6ee7c8" stopOpacity={0} /></linearGradient></defs><XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: "#94a0b4", fontSize: 10 }} dy={7} /><YAxis domain={[0, 100]} axisLine={false} tickLine={false} tick={{ fill: "#94a0b4", fontSize: 10 }} tickFormatter={(value) => `${value}%`} /><Tooltip contentStyle={tooltipStyle} formatter={(value) => [`${value}%`, "Utilization"]} /><Area type="monotone" dataKey="usage" stroke="#22a982" strokeWidth={2.5} fill="url(#utilGlow)" /></AreaChart></ResponsiveContainer></div>;
