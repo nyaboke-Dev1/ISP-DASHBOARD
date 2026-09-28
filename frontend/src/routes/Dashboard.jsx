@@ -104,13 +104,13 @@ export default function Dashboard() {
         </p>
       </header>
 
-      {isError ? (
+      {/* {isError ? (
         <Panel className="p-5">
           <p className="text-sm text-danger">
             {error instanceof Error ? error.message : "We couldn't load your workspace."}
           </p>
         </Panel>
-      ) : null}
+      ) : null} */}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard

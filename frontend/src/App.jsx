@@ -9,20 +9,15 @@ import { AuthProvider } from "./contexts/AuthContext";
 
 import NotFound from "./routes/NotFound";
 import { LoginPage } from "./routes/Auth";
-import Marketing from "./routes/Marketing";
-import Dashboard from "./routes/Dashboard";
+import  Marketing  from "./routes/Marketing";
+import  Dashboard  from "./routes/Dashboard";
 import { CustomersPage } from "./routes/Customers";
 import { PackagesPage } from "./routes/Packages";
-
-const sectionRoutes = [
-  ["/dashboard", "dashboard"],
-  ["/invoices", "invoices"],
-  ["/payments", "payments"],
-  ["/network", "network"],
-  ["/tickets", "tickets"],
-  ["/audit-log", "audit-log"],
-  ["/settings", "settings"],
-];
+import { InvoicesPage } from "./routes/Invoices";
+import { PaymentsPage } from "./routes/Payments";
+import {TicketsPage} from "./routes/Tickets";
+import {NetworkPage} from "./routes/Network";
+import {AuditPage} from "./routes/Audit";
 
 function AppRoutes() {
   return (
@@ -31,14 +26,18 @@ function AppRoutes() {
 
       <Route path="/login" element={<LoginPage />} />
 
-      {sectionRoutes.map(([path, section]) => (
-        <Route
-          key={path}
-          path={path}
-          element={<Dashboard section={section} />}
-        />
-      ))}
+      {/* Dashboard-style pages */}
+      <Route
+        path="/dashboard"
+        element={<Dashboard section="dashboard" />}
+      />
 
+      <Route
+        path="/settings"
+        element={<Dashboard section="settings" />}
+      />
+
+      {/* Individual pages */}
       <Route
         path="/customers"
         element={<CustomersPage />}
@@ -47,6 +46,31 @@ function AppRoutes() {
       <Route
         path="/packages"
         element={<PackagesPage />}
+      />
+
+      <Route
+        path="/invoices"
+        element={<InvoicesPage />}
+      />
+
+      <Route
+        path="/payments"
+        element={<PaymentsPage />}
+      />
+
+      <Route
+        path="/network"
+        element={<NetworkPage />}
+      />
+
+      <Route
+        path="/tickets"
+        element={<TicketsPage />}
+      />
+
+      <Route
+        path="/audit"
+        element={<AuditPage />}
       />
 
       <Route
