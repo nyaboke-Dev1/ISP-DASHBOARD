@@ -18,6 +18,7 @@ import { PaymentsPage } from "./routes/Payments";
 import {TicketsPage} from "./routes/Tickets";
 import {NetworkPage} from "./routes/Network";
 import {AuditPage} from "./routes/Audit";
+import {SettingsPage} from "./routes/Settings"
 
 function AppRoutes() {
   return (
@@ -31,12 +32,6 @@ function AppRoutes() {
         path="/dashboard"
         element={<Dashboard section="dashboard" />}
       />
-
-      <Route
-        path="/settings"
-        element={<Dashboard section="settings" />}
-      />
-
       {/* Individual pages */}
       <Route
         path="/customers"
@@ -71,6 +66,11 @@ function AppRoutes() {
       <Route
         path="/audit"
         element={<AuditPage />}
+      />
+
+      <Route
+        path="/settings"
+        element={<SettingsPage />}
       />
 
       <Route

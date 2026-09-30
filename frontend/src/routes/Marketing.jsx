@@ -1,44 +1,319 @@
-import { ArrowRight, Check, ChevronRight, CircleDotDashed, Gauge, Network, ShieldCheck, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
-// import { BrandMark } from "@/components/AppShell";
-const routeCards = [
-  { number: "01", title: "Subscribers & packages", text: "Track accounts, plans and account status.", icon: Gauge },
-  { number: "02", title: "Billing that adds up", text: "Invoices, M-Pesa payments and balances.", icon: Network },
-  { number: "03", title: "Traffic you can see", text: "Daily upload and download across the network.", icon: ShieldCheck },
+import {
+  Activity,
+  ArrowRight,
+  BarChart3,
+  Check,
+  ChevronRight,
+  CreditCard,
+  FileText,
+  Headset,
+  History,
+  Network,
+  Users,
+  Wifi,
+} from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+
+import heroImage from "@/assets/swiftnet-hero.jpg";
+import coverageImage from "@/assets/service-coverage-illustration.png";
+
+const capabilities = [
+  {
+    icon: Users,
+    title: "Subscribers",
+    copy: "Keep customer accounts, locations, service status and assigned plans together.",
+  },
+  {
+    icon: Wifi,
+    title: "Packages",
+    copy: "See plan speeds, prices and billing cycles alongside your subscriber base.",
+  },
+  {
+    icon: FileText,
+    title: "Invoices",
+    copy: "Stay on top of billing, due dates and outstanding balances.",
+  },
+  {
+    icon: CreditCard,
+    title: "Payments",
+    copy: "Follow M-Pesa confirmations and manual receipts in the same place as invoices.",
+  },
+  {
+    icon: Network,
+    title: "Network usage",
+    copy: "Read upload and download trends without losing sight of the customers behind them.",
+  },
+  {
+    icon: Headset,
+    title: "Support & accountability",
+    copy: "Track ticket priorities and assignments, with an audit trail of staff activity.",
+  },
 ];
-export default function Marketing() {
-  return <div className="min-h-screen overflow-hidden bg-[#f5f6f8] text-[#14213d]">
-    <header className="relative z-10 flex items-center justify-between px-5 py-5 sm:px-8 lg:px-14 lg:py-7">
-      {/* <Link to="/" aria-label="Northline home"><BrandMark /></Link> */}
-      <nav className="hidden items-center gap-7 text-xs font-bold text-[#5e6b82] md:flex" aria-label="Marketing navigation"><a href="#system" className="hover:text-[#1758e8]">System</a><a href="#workflows" className="hover:text-[#1758e8]">Workflows</a><a href="#coverage" className="hover:text-[#1758e8]">Coverage</a></nav>
-      <div className="flex items-center gap-2.5"><Link to="/login" className="rounded-xl bg-[#1758e8] px-4 py-2.5 text-xs font-bold text-white shadow-[0_10px_22px_rgba(23,88,232,0.24)] transition hover:-translate-y-0.5 hover:bg-[#134dd0] active:scale-[0.97]">Operator login</Link></div>
-    </header>
 
-    <main>
-      <section className="relative mx-auto max-w-[1500px] px-5 pb-16 pt-5 sm:px-8 lg:px-14 lg:pb-24 lg:pt-12">
-        <div className="absolute left-0 top-8 hidden h-px w-[17%] bg-[#cad3e3] lg:block" />
-        <div className="grid items-stretch gap-8 lg:grid-cols-[0.86fr_1.14fr] lg:gap-14">
-          <div className="relative z-10 flex flex-col justify-center py-4 lg:py-12">
-            <p className="mb-6 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-[#1758e8]"><span className="inline-block h-5 w-[3px] bg-[#1758e8]" />ISP operating system</p>
-            <h1 className="max-w-[620px] text-[clamp(2.7rem,6vw,5.8rem)] font-bold leading-[0.92] tracking-[-0.075em] text-[#15213d]">Run your whole <span className="text-[#1758e8]">network.</span><br />from one calm workspace.</h1>
-            <p className="mt-7 max-w-lg text-base leading-7 text-[#657187] sm:text-lg">Subscribers, service packages, invoices, payments, traffic and support tickets — together, with live numbers your team can trust.</p>
-            <div className="mt-9 flex flex-wrap gap-3"><Link></Link><a href="#system" className="group inline-flex items-center gap-3 rounded-xl bg-[#14213d] px-5 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#223253] active:scale-[0.97]">See the system <ChevronRight className="h-4 w-4" /></a></div>
-            <div className="mt-12 grid max-w-lg grid-cols-3 border-t border-[#dce2eb] pt-5"><div><p className="text-2xl font-bold tracking-[-0.06em] tabular-nums">01</p><p className="mt-1 text-[10px] font-bold uppercase tracking-[0.15em] text-[#7b869a]">Signal field</p></div><div><p className="text-2xl font-bold tracking-[-0.06em] tabular-nums">09</p><p className="mt-1 text-[10px] font-bold uppercase tracking-[0.15em] text-[#7b869a]">Core views</p></div><div><p className="text-2xl font-bold tracking-[-0.06em] tabular-nums">1:1</p><p className="mt-1 text-[10px] font-bold uppercase tracking-[0.15em] text-[#7b869a]">Audit route</p></div></div>
-          </div>
-          <div className="relative min-h-[440px] overflow-hidden rounded-[28px] border border-[#263657] bg-[#14213d] shadow-[0_26px_70px_rgba(26,40,70,0.22)] lg:min-h-[600px]">
-            <img src="/signal-atlas-hero.png" alt="Abstract fiber routing field" className="absolute inset-0 h-full w-full object-cover opacity-90" />
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(20,33,61,0.76),rgba(20,33,61,0.08)_70%)]" />
-            <div className="absolute left-6 top-6 flex items-center gap-2 rounded-full border border-white/15 bg-[#172746]/75 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-white/75 backdrop-blur"><CircleDotDashed className="h-3.5 w-3.5 text-[#6ee7c8]" /> Live system map</div>
-            <div className="absolute bottom-6 left-6 right-6 grid gap-3 sm:grid-cols-3"><div className="rounded-2xl border border-white/10 bg-[#182846]/85 p-4 text-white backdrop-blur"><p className="text-[9px] font-bold uppercase tracking-[0.16em] text-white/50">Subscribers online</p><p className="mt-2 text-2xl font-bold tracking-[-0.055em]">18,246</p><p className="mt-2 flex items-center gap-1 text-[10px] font-bold text-[#6ee7c8]"><span className="h-1.5 w-1.5 rounded-full bg-[#6ee7c8]" /> 96.8% live</p></div><div className="rounded-2xl border border-white/10 bg-[#182846]/85 p-4 text-white backdrop-blur"><p className="text-[9px] font-bold uppercase tracking-[0.16em] text-white/50">Capacity alert</p><p className="mt-2 text-2xl font-bold tracking-[-0.055em]">03</p><p className="mt-2 flex items-center gap-1 text-[10px] font-bold text-[#f6bb59]"><span className="h-1.5 w-1.5 rounded-full bg-[#f6bb59]" /> East / edge 07</p></div><div className="rounded-2xl border border-white/10 bg-[#182846]/85 p-4 text-white backdrop-blur"><p className="text-[9px] font-bold uppercase tracking-[0.16em] text-white/50">Revenue in motion</p><p className="mt-2 text-2xl font-bold tracking-[-0.055em]">$88.4k</p><p className="mt-2 flex items-center gap-1 text-[10px] font-bold text-[#a9c0ff]"><span className="h-1.5 w-1.5 rounded-full bg-[#a9c0ff]" /> Reconcile today</p></div></div>
-            <div className="absolute right-6 top-6 hidden h-14 w-14 items-center justify-center rounded-full border border-white/15 bg-white/10 text-[#6ee7c8] backdrop-blur sm:flex"><Sparkles className="h-5 w-5" /></div>
-          </div>
+export function Marketing() {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Header */}
+      <header className="relative z-20 border-b border-sidebar-border bg-sidebar text-sidebar-accent-foreground">
+        <div className="mx-auto flex h-16 max-w-[88rem] items-center justify-between gap-4 px-5 sm:px-8 lg:px-12">
+          <Link
+            to="/"
+            className="flex min-w-0 items-center gap-2.5"
+            aria-label="Swift-Net home"
+          >
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <Activity size={18} aria-hidden="true" />
+            </span>
+
+            <span className="min-w-0 leading-tight">
+              <span className="block font-display text-base font-bold">
+                Swift-Net
+              </span>
+              <span className="block text-[10px] text-sidebar-foreground">
+                ISP Operations
+              </span>
+            </span>
+          </Link>
+
+          <nav
+            aria-label="Main navigation"
+            className="hidden items-center gap-7 text-sm font-medium text-sidebar-foreground md:flex"
+          >
+            <a
+              href="#platform"
+              className="transition-colors hover:text-sidebar-primary"
+            >
+              Platform
+            </a>
+
+            <a
+              href="#workflow"
+              className="transition-colors hover:text-sidebar-primary"
+            >
+              How it works
+            </a>
+          </nav>
+
+          <Button asChild size="sm" className="shrink-0">
+            <Link to="/login">
+              Operator Login
+              <ArrowRight size={15} aria-hidden="true" />
+            </Link>
+          </Button>
         </div>
-      </section>
+      </header>
 
-      <section id="system" className="border-y border-[#e0e5ed] bg-white px-5 py-16 sm:px-8 lg:px-14 lg:py-24"><div className="mx-auto max-w-[1400px]"><div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]"><div><p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1758e8]">A shared operating field</p><h2 className="mt-4 max-w-md text-4xl font-bold leading-[0.98] tracking-[-0.06em] text-[#15213d]">From one warning to the exact work it needs.</h2></div><div className="grid gap-4 sm:grid-cols-3">{routeCards.map(({ number, title, text, icon: Icon }) => <article key={number} className="relative overflow-hidden rounded-2xl border border-[#e1e6ee] bg-[#fbfcfe] p-5 transition hover:-translate-y-1 hover:border-[#c2d2f3] hover:shadow-[0_16px_30px_rgba(26,40,70,0.07)]"><p className="text-[10px] font-bold tracking-[0.18em] text-[#1758e8]">{number}</p><span className="mt-7 grid h-10 w-10 place-items-center rounded-xl bg-[#eaf0ff] text-[#1758e8]"><Icon className="h-5 w-5" /></span><h3 className="mt-5 text-lg font-bold tracking-[-0.04em]">{title}</h3><p className="mt-2 text-sm leading-6 text-[#6c7890]">{text}</p><div className="absolute bottom-0 left-5 right-5 h-px bg-[#d6deed]" /></article>)}</div></div></div></section>
+      <main>
+        {/* Hero */}
+        <section className="relative isolate flex min-h-[480px] items-center overflow-hidden bg-hero text-hero-foreground sm:min-h-[540px] lg:min-h-[580px]">
+          <img
+            src={heroImage}
+            alt="Network operations team monitoring connectivity and equipment"
+            width={1600}
+            height={1008}
+            className="absolute inset-0 -z-20 h-full w-full object-cover object-[62%_center]"
+            fetchPriority="high"
+          />
 
-      <section id="coverage" className="mx-auto grid max-w-[1500px] items-center gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:px-14 lg:py-24"><div className="overflow-hidden rounded-[26px] border border-[#dce3ee] bg-[#eaf0f5] shadow-[0_18px_45px_rgba(28,42,75,0.08)]"><img src="/service-coverage-illustration.png" alt="Abstract community fiber coverage field" className="h-full min-h-[260px] w-full object-cover" /></div><div><p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1758e8]">Built for the full route</p><h2 className="mt-4 text-4xl font-bold leading-[0.98] tracking-[-0.06em] text-[#15213d]">The business view and the network view finally agree.</h2><ul className="mt-7 space-y-4">{["Landing, login, and registration paths for a coherent first impression.", "A purpose-built command rail for clients, packages, billing, and support.", "Signal-led charts and network visuals where an operator must scan fast."].map((text) => <li key={text} className="flex gap-3 text-sm leading-6 text-[#637087]"><span className="mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#e5f7f1] text-[#168263]"><Check className="h-3 w-3" /></span>{text}</li>)}</ul><Link to="/dashboard" className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-[#1758e8] transition hover:gap-3">Start the tour <ArrowRight className="h-4 w-4" /></Link></div></section>
-    </main>
-    <footer className="border-t border-[#dfe5ee] bg-[#14213d] px-5 py-8 text-white sm:px-8 lg:px-14"><div className="mx-auto flex max-w-[1500px] flex-wrap items-center justify-between gap-4"><p className="text-xs text-white/55">ISP Command Center</p><Link to="/dashboard" className="rounded-lg bg-white/10 px-3 py-2 text-xs font-bold text-white transition hover:bg-white/15">Open demo</Link></div></footer>
-  </div>;
+          <div
+            className="absolute inset-0 -z-10 bg-hero-overlay"
+            aria-hidden="true"
+          />
+
+          <div className="mx-auto w-full max-w-[88rem] px-5 py-16 sm:px-8 lg:px-12">
+            <div className="max-w-[42rem]">
+              <p className="mb-6 flex items-center gap-2 text-xs font-bold uppercase text-primary">
+                <span className="h-2 w-2 rounded-full bg-primary" />
+                ISP operating system
+              </p>
+
+              <h1 className="font-display text-primary-foreground text-5xl font-bold leading-[1.06] sm:text-6xl lg:text-7xl">
+                Swift-Net
+              </h1>
+
+              <p className="mt-5 max-w-[37rem] font-display text-primary-foreground text-2xl font-medium leading-tight sm:text-3xl">
+                Run your whole network from one calm workspace.
+              </p>
+
+              <p className="mt-5 max-w-[34rem] leading-7 text-primary-foreground">
+                Bring subscribers, service packages, billing, payments,
+                traffic and support into a single workspace built for ISP
+                teams.
+              </p>
+
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Button asChild size="lg">
+                  <Link to="/dashboard">
+                    Request a Tour
+                    <ArrowRight size={17} aria-hidden="true" />
+                  </Link>
+                </Button>
+
+                <a
+                  href="#platform"
+                  className="inline-flex h-10 items-center gap-1.5 px-2 text-sm font-semibold text-hero-foreground transition hover:text-hero-accent"
+                >
+
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Platform capabilities */}
+        <section
+          id="platform"
+          className="border-b border-border bg-card px-5 py-16 sm:px-8 lg:px-12 lg:py-20"
+        >
+          <div className="mx-auto max-w-[88rem]">
+            <div className="mb-9 max-w-2xl">
+              <p className="text-xs font-bold uppercase text-primary">
+                The platform
+              </p>
+
+              <h2 className="mt-3 font-display text-3xl font-semibold leading-tight sm:text-4xl">
+                Everything your team needs to keep service moving.
+              </h2>
+
+              <p className="mt-3 text-base leading-7 text-muted-foreground">
+                See the commercial and operational picture together, rather
+                than switching between disconnected records.
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {capabilities.map(({ icon: Icon, title, copy }, index) => (
+                <article
+                  key={title}
+                  className="min-h-48 rounded-lg border border-border bg-card p-6 shadow-card transition-colors hover:border-primary/40"
+                >
+                  <div className="mb-6 flex items-start justify-between">
+                    <span className="grid h-10 w-10 place-items-center rounded-md bg-primary-soft text-primary">
+                      <Icon size={19} aria-hidden="true" />
+                    </span>
+
+                    <span className="text-xs tabular-nums text-muted-foreground">
+                      0{index + 1}
+                    </span>
+                  </div>
+
+                  <h3 className="font-display text-lg font-semibold">
+                    {title}
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                    {copy}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Workflow */}
+        <section
+          id="workflow"
+          className="px-5 py-16 sm:px-8 lg:px-12 lg:py-20"
+        >
+          <div className="mx-auto grid max-w-[88rem] items-center gap-10 lg:grid-cols-[1fr_1fr] lg:gap-16">
+            <div className="overflow-hidden rounded-lg border border-border bg-muted">
+              <img
+                src={coverageImage}
+                alt="Illustration of a connected service coverage area"
+                loading="lazy"
+                className="aspect-[4/3] h-full w-full object-cover"
+              />
+            </div>
+
+            <div>
+              <p className="text-xs font-bold uppercase text-primary">
+                A connected workflow
+              </p>
+
+              <h2 className="mt-3 font-display text-3xl font-semibold leading-tight sm:text-4xl">
+                From customer sign-up to the next support request.
+              </h2>
+
+              <p className="mt-4 text-base leading-7 text-muted-foreground">
+                Swift-Net puts the information behind each service decision
+                within reach, so your team can follow the whole customer
+                journey.
+              </p>
+
+              <ul className="mt-7 space-y-4 text-sm leading-6">
+                {[
+                  "Find a subscriber and the package they use.",
+                  "Review an invoice and its related payment.",
+                  "Check network activity and follow up on a support ticket.",
+                  "Keep a record of changes in the audit log.",
+                ].map((item) => (
+                  <li key={item} className="flex gap-3">
+                    <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-success-soft text-success">
+                      <Check size={12} aria-hidden="true" />
+                    </span>
+
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              
+            </div>
+          </div>
+        </section>
+
+        {/* Call to action */}
+        <section className="border-y border-border bg-card px-5 py-14 sm:px-8 lg:px-12">
+          <div className="mx-auto flex max-w-[88rem] flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase text-primary">
+                Explore Swift-Net
+              </p>
+
+              <h2 className="mt-2 font-display text-2xl font-semibold sm:text-3xl">
+                See the full operating picture.
+              </h2>
+
+              <p className="mt-2 text-sm text-muted-foreground">
+                Take a look at the workspace screens with sample content.
+              </p>
+            </div>
+
+            
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-sidebar-border bg-sidebar px-5 py-8 sm:px-8 lg:px-12">
+        <div className="mx-auto flex max-w-[88rem] flex-wrap items-center justify-between gap-4 text-xs text-sidebar-foreground">
+          <span className="flex items-center gap-2 font-semibold text-sidebar-accent-foreground">
+            <Activity
+              size={16}
+              className="text-sidebar-primary"
+              aria-hidden="true"
+            />
+            Swift-Net · ISP Operations
+          </span>
+
+          <span className="flex items-center gap-4">
+            <Link to="/dashboard" className="hover:text-sidebar-primary">
+              Workspace
+            </Link>
+
+            <span className="flex items-center gap-1">
+              <BarChart3 size={13} aria-hidden="true" />
+              Operations at a glance
+            </span>
+
+            <History size={14} aria-hidden="true" />
+          </span>
+        </div>
+      </footer>
+    </div>
+  );
 }
+
+export default Marketing;
