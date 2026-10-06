@@ -22,14 +22,16 @@ export function LoginPage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    toast.info("Enter your login credentials.", {
-      description: "The operator service has not been connected yet.",
-    });
+    // toast.info("Sign-in is not available in this preview.", {
+    //   description: "The operator service has not been connected yet.",
+    // });
   }
 
   return (
     <main className="min-h-screen bg-background lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      {/* Left side - Login form */}
       <section className="flex min-h-[560px] flex-col px-5 py-7 sm:px-10 lg:min-h-screen lg:px-14 lg:py-10 xl:px-20">
+        {/* Header */}
         <div className="flex items-center justify-between gap-4">
           <Link
             to="/"
@@ -54,6 +56,7 @@ export function LoginPage() {
           </Link>
         </div>
 
+        {/* Login content */}
         <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col justify-center py-12 lg:py-16">
           <p className="flex items-center gap-2 text-xs font-bold uppercase text-primary">
             <span className="h-2 w-2 rounded-full bg-accent" />
@@ -68,6 +71,7 @@ export function LoginPage() {
             Sign in to your ISP operations workspace.
           </p>
 
+          {/* Preview notice */}
           {/* <div
             className="mt-7 border-l-2 border-primary bg-primary-soft/60 px-4 py-3 text-sm leading-6 text-foreground"
             role="status"
@@ -76,7 +80,9 @@ export function LoginPage() {
             credentials.
           </div> */}
 
+          {/* Login form */}
           <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+            {/* Username */}
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
 
@@ -91,6 +97,7 @@ export function LoginPage() {
               />
             </div>
 
+            {/* Password */}
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
 
@@ -119,7 +126,9 @@ export function LoginPage() {
                   }
                   title={showPassword ? "Hide password" : "Show password"}
                   aria-pressed={showPassword}
-                  onClick={() => setShowPassword((value) => !value)}
+                  onClick={() =>
+                    setShowPassword((value) => !value)
+                  }
                   className="absolute right-1 top-1 h-9 w-9 text-muted-foreground hover:text-primary"
                 >
                   {showPassword ? (
@@ -131,6 +140,7 @@ export function LoginPage() {
               </div>
             </div>
 
+            {/* Submit */}
             <Button
               type="submit"
               size="lg"
@@ -147,33 +157,39 @@ export function LoginPage() {
         </div>
       </section>
 
+      {/* Right side - Hero */}
       <aside className="relative isolate hidden min-h-screen flex-col justify-between overflow-hidden bg-hero p-10 text-hero-foreground lg:flex xl:p-16">
+        {/* Background image */}
         <img
           src={heroImage}
           alt="Network operations team monitoring connectivity"
           className="absolute inset-0 -z-20 h-full w-full object-cover object-[62%_center]"
         />
 
+        {/* Image overlay */}
         <div
           className="absolute inset-0 -z-10 bg-hero-overlay"
           aria-hidden="true"
         />
 
+        {/* Top label */}
         <span className="text-xs font-bold uppercase text-hero-accent">
           ISP Operations
         </span>
 
+        {/* Hero text */}
         <div className="max-w-lg">
           <h2 className="font-display text-4xl font-semibold leading-tight text-white xl:text-5xl">
             One clear view of the business behind your network.
           </h2>
 
-          <p className="mt-5 max-w-md text-sm leading-7 text-primary-foreground">
+          {/* <p className="mt-5 max-w-md text-sm leading-7 text-primary-foreground">
             Subscribers, billing, network activity and support in one calm
             workspace.
-          </p>
+          </p> */}
         </div>
 
+        {/* Bottom label */}
         <p className="flex items-center gap-2 text-xs font-medium text-primary-foreground">
           <ShieldCheck
             size={16}
@@ -186,3 +202,4 @@ export function LoginPage() {
     </main>
   );
 }
+

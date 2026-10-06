@@ -8,7 +8,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
 
 import NotFound from "./routes/NotFound";
-import { LoginPage } from "./routes/Auth";
+import { LoginPage }  from "./routes/Auth";
 import  Marketing  from "./routes/Marketing";
 import  Dashboard  from "./routes/Dashboard";
 import { CustomersPage } from "./routes/Customers";
