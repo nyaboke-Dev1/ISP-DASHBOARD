@@ -41,10 +41,10 @@ const packageSchema = z.object({
     .min(1, "Speed must be at least 1 Mbps")
     .max(10000, "Speed looks too high"),
 
-  price: z
-    .number({ message: "Enter the price in KES" })
-    .min(0, "Price cannot be negative")
-    .max(10000000, "Price looks too high"),
+ price: z
+  .number({ message: "Enter the price in KES" })
+  .positive("Price must be greater than zero")
+  .max(10000000, "Price looks too high"),
 
   billing_cycle: z
     .string()
@@ -120,46 +120,48 @@ export function PackageDialog({
     setErrors({});
   };
 
-  const submit = (e) => {
-    e.preventDefault();
+const submit = (e) => {
+  e.preventDefault();
 
-    const parsed = packageSchema.safeParse({
-      name: form.name,
+  const parsed = packageSchema.safeParse({
+    name: form.name,
 
-      speed_mbps:
-        form.speed === ""
-          ? Number.NaN
-          : Number(form.speed),
+    speed_mbps:
+      form.speed === ""
+        ? Number.NaN
+        : Number(form.speed),
 
-      price:
-        form.price === ""
-          ? Number.NaN
-          : Number(form.price),
+    price:
+      form.price === ""
+        ? Number.NaN
+        : Number(form.price),
 
-      billing_cycle: form.billing_cycle,
-      description: form.description,
-      is_active: form.is_active,
-    });
+    billing_cycle: form.billing_cycle,
+    description: form.description,
+    is_active: form.is_active,
+  });
 
-    if (!parsed.success) {
-      const next = {};
+  if (!parsed.success) {
+    const next = {};
 
-      for (const issue of parsed.error.issues) {
-        const field = issue.path[0];
+    for (const issue of parsed.error.issues) {
+      const field = issue.path[0];
 
-        if (field && !next[field]) {
-          next[field] = issue.message;
-        }
+      if (field && !next[field]) {
+        next[field] = issue.message;
       }
-
-      setErrors(next);
-      return;
     }
 
-    save.mutate(parsed.data, {
-      onSuccess: () => onOpenChange(false),
-    });
-  };
+    setErrors(next);
+    return;
+  }
+
+  save.mutate(parsed.data, {
+    onSuccess: () => onOpenChange(false),
+  });
+};
+
+
 
   return (
     <Dialog
@@ -293,7 +295,7 @@ export function PackageDialog({
                   Quarterly
                 </SelectItem>
 
-                <SelectItem value="yearly">
+                <SelectItem value="annual">
                   Yearly
                 </SelectItem>
               </SelectContent>

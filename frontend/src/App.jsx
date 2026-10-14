@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { AuthProvider } from "./contexts/AuthContext";
+// import { AuthProvider } from "./contexts/AuthContext";
 
 import NotFound from "./routes/NotFound";
 import { LoginPage }  from "./routes/Auth";
@@ -89,14 +89,12 @@ function AppRoutes() {
 export default function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
         <ThemeProvider defaultTheme="light">
           <TooltipProvider>
             <Toaster position="top-right" richColors />
             <AppRoutes />
           </TooltipProvider>
         </ThemeProvider>
-      </AuthProvider>
     </ErrorBoundary>
   );
 }

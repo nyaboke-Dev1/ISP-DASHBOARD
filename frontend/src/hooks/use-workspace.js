@@ -2,8 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { fetchWorkspace, workspaceQueryKey } from "@/lib/isp";
-import { useAuth } from "@/hooks/use-auth";
-
+import { useAuth } from "@/contexts/AuthContext";
 export function useWorkspace() {
   return useQuery({
     queryKey: workspaceQueryKey,

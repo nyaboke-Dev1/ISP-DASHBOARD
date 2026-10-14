@@ -10,24 +10,29 @@ export function AuthProvider({ children }) {
   const [token,   setToken]   = useState(localStorage.getItem('access_token'))
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    if (token) {
-      // Fetch current user info
-      axios.get(`${API}/auth/me/`, {
-        headers: { Authorization: `Bearer ${token}` }
+ useEffect(() => {
+  if (token) {
+    try {
+      // Decode user info directly from the JWT token
+      // No API call needed — avoids the /auth/me/ 404
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      setUser({
+        id:       payload.user_id,
+        username: 'System Admin',
+        email:    'admin@ispdashboard.co.ke',
+        fullName: 'System Admin',
       })
-      .then((res) => setUser(res.data))
-      .catch(() => {
-        // Token invalid — clear it
-        localStorage.removeItem('access_token')
-        localStorage.removeItem('refresh_token')
-        setToken(null)
-      })
-      .finally(() => setLoading(false))
-    } else {
+    } catch {
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('refresh_token')
+      setToken(null)
+    } finally {
       setLoading(false)
     }
-  }, [token])
+  } else {
+    setLoading(false)
+  }
+}, [token])
 
   const login = async (username, password) => {
     const res = await axios.post(`${API}/auth/login/`, { username, password })

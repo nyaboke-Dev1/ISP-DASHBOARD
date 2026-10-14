@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'django_filters',
     'dashboard',
     "corsheaders",
+    'rest_framework',
+
 ]
 
 MIDDLEWARE = [
@@ -59,7 +61,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Vite's default dev port
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
 
 ROOT_URLCONF = 'myproject.urls'

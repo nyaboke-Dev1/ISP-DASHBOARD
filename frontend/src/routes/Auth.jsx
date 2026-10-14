@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Activity,
   ArrowLeft,
@@ -10,22 +10,50 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
-
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import heroImage from "@/assets/swiftnet-hero.jpg";
 
+
 export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  
+async function handleSubmit(event) {
+  event.preventDefault();
 
-    // toast.info("Sign-in is not available in this preview.", {
-    //   description: "The operator service has not been connected yet.",
-    // });
+  if (loading) return;
+
+  setLoading(true);
+
+  const formData = new FormData(event.currentTarget);
+  const username = formData.get("username");
+  const password = formData.get("password");
+
+  try {
+    // AuthContext sends credentials to Django and saves both JWT tokens.
+    await login(username, password);
+
+    toast.success("Login successful!");
+    navigate("/dashboard", { replace: true });
+  } catch (error) {
+    console.error("Login error:", error);
+
+    toast.error(
+      error.response?.data?.detail ||
+      error.message ||
+      "Unable to sign in. Please check your credentials."
+    );
+  } finally {
+    setLoading(false);
   }
+}
+
 
   return (
     <main className="min-h-screen bg-background lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
@@ -141,14 +169,16 @@ export function LoginPage() {
             </div>
 
             {/* Submit */}
-            <Button
+            
+          <Button
               type="submit"
               size="lg"
+              disabled={loading}
               className="h-11 w-full font-semibold"
-            >
-              Sign in
-              <ArrowRight aria-hidden="true" />
-            </Button>
+          >
+              {loading ? "Signing in..." : "Sign in"}
+              {!loading && <ArrowRight aria-hidden="true" />}
+          </Button>
           </form>
 
           <p className="mt-6 text-center text-xs text-muted-foreground">

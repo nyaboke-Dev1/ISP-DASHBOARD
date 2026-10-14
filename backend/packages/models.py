@@ -24,6 +24,6 @@ class Package(models.Model):
     def __str__(self):
         return f"{self.name} — {self.speed_mbps} Mbps @ KES {self.price}"
 
-    @property
-    def subscriber_count(self):
-        return self.customers.count()
+    # @property
+    # def subscriber_count(self):
+    #     return self.customers.count()

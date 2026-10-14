@@ -24,7 +24,7 @@ import {
   Td,
   Th,
 } from "@/components/isp/ui";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/contexts/AuthContext";
 import { useWorkspace } from "@/hooks/use-workspace";
 import { gb, money, shortDate } from "@/lib/isp";
 

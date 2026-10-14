@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Gauge, Pencil, Plus, Power, Users } from "lucide-react";
+import { Gauge, Pencil, Plus, Power, Users, Trash2 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { PackageDialog } from "@/components/isp/package-dialog";
 import { PageHeader, Panel, StatusPill } from "@/components/isp/ui";
@@ -10,6 +10,7 @@ import {
   money,
   titleCase,
   togglePackageActive,
+  deletePackage,
 } from "@/lib/isp";
 import {
   useActorName,
@@ -26,8 +27,12 @@ function PackagesPage() {
   const actor = useActorName();
 
   const toggle = useWorkspaceAction(
-    (pkg) => togglePackageActive(pkg, actor),
+    (pkg) => togglePackageActive(pkg.id),
     "Package availability updated"
+  );
+  const remove = useWorkspaceAction(
+  (pkg) => deletePackage(pkg.id),
+  "Package deleted"
   );
 
   const packages = data?.packages ?? [];
@@ -125,7 +130,7 @@ function PackagesPage() {
             assigning it to customers.
           </p>
 
-          <Button
+          {/* <Button
             className="mt-4 gap-2"
             onClick={openNew}
           >
@@ -134,7 +139,7 @@ function PackagesPage() {
               aria-hidden="true"
             />
             New package
-          </Button>
+          </Button> */}
         </Panel>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -253,6 +258,26 @@ function PackagesPage() {
                       ? "Deactivate"
                       : "Activate"}
                   </Button>
+
+                  
+                  <Button
+                      size="sm"
+                      variant="destructive"
+                      className="gap-1.5"
+                      disabled={remove.isPending}
+                      onClick={() => {
+                            const confirmed = window.confirm(
+                              `Are you sure you want to delete "${pkg.name}"? This action cannot be undone.`
+                            );
+
+                            if (confirmed) {
+                              remove.mutate(pkg);
+                            }
+                      }}
+                        >
+                      <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                      Delete
+                    </Button>
 
                   <Button
                     size="sm"
