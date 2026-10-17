@@ -20,7 +20,7 @@ import { useWorkspace } from "@/hooks/use-workspace";
 import { useRequireAuth } from "@/hooks/use-require-auth";
 
 export function AuditPage() {
-  //useRequireAuth();
+  useRequireAuth();
 
   const { data, isPending } = useWorkspace();
   const [query, setQuery] = useState("");
@@ -28,34 +28,38 @@ export function AuditPage() {
   const audits = data?.audits ?? [];
 
   const actors = useMemo(
-    () => new Set(audits.map((audit) => audit.actor)).size,
-    [audits]
+    () =>
+      new Set(audits.map((audit) => audit.admin_username).filter(Boolean)).size,
+    [audits],
   );
 
-  const today = useMemo(() => {
-    const start = new Date();
+  
+const today = useMemo(() => {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
 
-    start.setHours(0, 0, 0, 0);
+  return audits.filter(
+    (audit) => audit.timestamp && new Date(audit.timestamp) >= start,
+  ).length;
+}, [audits]);
 
-    return audits.filter(
-      (audit) => new Date(audit.created_at) >= start
-    ).length;
-  }, [audits]);
 
   const rows = useMemo(() => {
-    const q = query.trim().toLowerCase();
+  const q = query.trim().toLowerCase();
 
-    if (!q) {
-      return audits;
-    }
+  if (!q) return audits;
 
-    return audits.filter(
-      (audit) =>
-        audit.action.toLowerCase().includes(q) ||
-        audit.target.toLowerCase().includes(q) ||
-        audit.actor.toLowerCase().includes(q)
-    );
-  }, [audits, query]);
+  return audits.filter((audit) =>
+    [
+      audit.action,
+      audit.target_str,
+      audit.target_model,
+      audit.admin_username,
+    ].some((value) =>
+      String(value ?? "").toLowerCase().includes(q)
+    )
+  );
+}, [audits, query]);
 
   return (
     <AppShell>
@@ -114,10 +118,7 @@ export function AuditPage() {
         {isPending ? (
           <div className="space-y-3 p-5">
             {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton
-                key={i}
-                className="h-9 w-full"
-              />
+              <Skeleton key={i} className="h-9 w-full" />
             ))}
           </div>
         ) : (
@@ -133,39 +134,34 @@ export function AuditPage() {
 
             <tbody>
               {rows.length === 0 ? (
-                <EmptyRow
-                  colSpan={4}
-                  message="No activity recorded yet."
-                />
+                <EmptyRow colSpan={4} message="No activity recorded yet." />
               ) : (
                 rows.map((audit) => (
                   <tr
                     key={audit.id}
                     className="transition-colors hover:bg-muted/40"
                   >
-                    <Td className="font-medium">
-                      {audit.action}
-                    </Td>
+                    <Td className="font-medium">{audit.action}</Td>
 
                     <Td className="text-muted-foreground">
-                      {audit.target || "—"}
+                      {audit.target_str || "—"}
                     </Td>
 
                     <Td>
                       <span className="flex items-center gap-2.5">
                         <Monogram
-                          name={audit.actor}
+                          name={audit.admin_username || "Unknown"}
                           className="h-8 w-8"
                         />
 
                         <span className="truncate">
-                          {audit.actor}
+                          {audit.admin_username || "Unknown"}
                         </span>
                       </span>
                     </Td>
 
                     <Td className="whitespace-nowrap text-muted-foreground">
-                      {dateTime(audit.created_at)}
+                      {dateTime(audit.timestamp)}
                     </Td>
                   </tr>
                 ))

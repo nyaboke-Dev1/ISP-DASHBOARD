@@ -1,25 +1,7 @@
 from rest_framework import serializers
-from .models import Invoice, Payment
+from .models import Payment
+from invoices.models import Invoice
 from customers.models import Customer
-
-
-class InvoiceSerializer(serializers.ModelSerializer):
-    customer_name = serializers.CharField(source='customer.name', read_only=True)
-
-    class Meta:
-        model  = Invoice
-        fields = [
-            'id', 'customer', 'customer_name', 'amount',
-            'due_date', 'status', 'created_at', 'updated_at',
-        ]
-        read_only_fields = ['id', 'created_at', 'updated_at']
-
-    def validate_amount(self, value):
-        if value <= 0:
-            raise serializers.ValidationError('Amount must be greater than zero.')
-        return value
-
-
 class PaymentSerializer(serializers.ModelSerializer):
     customer_name = serializers.CharField(source='customer.name', read_only=True)
     invoice_id    = serializers.PrimaryKeyRelatedField(

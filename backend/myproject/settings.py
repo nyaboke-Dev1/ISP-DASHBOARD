@@ -47,7 +47,9 @@ INSTALLED_APPS = [
     'dashboard',
     "corsheaders",
     'rest_framework',
-
+    'invoices',
+    'subscriptions',
+    'workspace_config',
 ]
 
 MIDDLEWARE = [

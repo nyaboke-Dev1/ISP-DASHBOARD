@@ -6,6 +6,7 @@ import { PackageDialog } from "@/components/isp/package-dialog";
 import { PageHeader, Panel, StatusPill } from "@/components/isp/ui";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 import {
   money,
   titleCase,
@@ -38,24 +39,40 @@ function PackagesPage() {
   const packages = data?.packages ?? [];
   const customers = data?.customers ?? [];
 
-  const subscribers = useMemo(() => {
-    const map = new Map();
+  
+const subscribers = useMemo(() => {
+  const map = new Map();
 
-    for (const c of customers) {
-      if (c.package_id == null) continue;
+  for (const c of customers) {
+    // The API may return package_id or package.
+    const assignedPackage =
+      c.package_id ?? c.packageId ?? c.package;
 
-      map.set(
-        c.package_id,
-        (map.get(c.package_id) ?? 0) + 1
-      );
-    }
+    // Handle either a package ID or a nested package object.
+    const packageId =
+      assignedPackage && typeof assignedPackage === "object"
+        ? assignedPackage.id ?? assignedPackage.pk
+        : assignedPackage;
 
-    return map;
-  }, [customers]);
+    if (packageId == null || packageId === "") continue;
 
-  const totalAssigned = customers.filter(
-    (c) => c.package_id != null
-  ).length;
+    const id = String(packageId);
+
+    map.set(id, (map.get(id) ?? 0) + 1);
+  }
+
+  return map;
+}, [customers]);
+
+
+  
+const totalAssigned = customers.filter((c) => {
+  const assignedPackage =
+    c.package_id ?? c.packageId ?? c.package;
+
+  return assignedPackage != null && assignedPackage !== "";
+}).length;
+
 
   const monthlyRecurring = customers.reduce((sum, c) => {
     if (c.status !== "active") return sum;
@@ -144,7 +161,7 @@ function PackagesPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {packages.map((pkg) => {
-            const count = subscribers.get(pkg.id) ?? 0;
+            const count = subscribers.get(String(pkg.id)) ?? 0;
 
             const share = totalAssigned
               ? Math.round((count / totalAssigned) * 100)
@@ -260,26 +277,33 @@ function PackagesPage() {
                   </Button>
 
                   
-                  <Button
-                      size="sm"
-                      variant="destructive"
-                      className="gap-1.5"
-                      disabled={remove.isPending}
-                      onClick={() => {
-                            const confirmed = window.confirm(
-                              `Are you sure you want to delete "${pkg.name}"? This action cannot be undone.`
-                            );
+                  
+<Button
+  size="sm"
+  variant="destructive"
+  className="gap-1.5"
+  disabled={remove.isPending}
+  onClick={() => {
+    toast("Delete package?", {
+      description: `Are you sure you want to delete "${pkg.name}"? This action cannot be undone.`,
+      action: {
+        label: "Delete",
+        onClick: () => remove.mutate(pkg),
+      },
+      cancel: {
+        label: "Cancel",
+        onClick: () => {},
+      },
+      duration: 10000,
+    });
+  }}
+>
+  <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+  Delete
+</Button>
 
-                            if (confirmed) {
-                              remove.mutate(pkg);
-                            }
-                      }}
-                        >
-                      <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
-                      Delete
-                    </Button>
 
-                  <Button
+                  {/* <Button
                     size="sm"
                     variant="ghost"
                     asChild
@@ -296,7 +320,7 @@ function PackagesPage() {
                     >
                       View subscribers
                     </Link>
-                  </Button>
+                  </Button> */}
                 </div>
               </Panel>
             );

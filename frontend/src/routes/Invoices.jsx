@@ -47,7 +47,7 @@ const FILTERS = [
 ];
 
 export function InvoicesPage() {
-  //useRequireAuth();
+  useRequireAuth();
 
   const { data, isPending } = useWorkspace();
   const actor = useActorName();
@@ -60,32 +60,49 @@ export function InvoicesPage() {
   const invoices = data?.invoices ?? [];
   const customers = data?.customers ?? [];
 
-  const customerName = (id) => {
-    return (
-      customers.find((customer) => customer.id === id)?.name ?? "Unknown"
-    );
-  };
+  
+const customerName = (invoice) => {
+  const customerId =
+    invoice.customer_id ??
+    invoice.customer?.id ??
+    invoice.customer;
+
+  if (customerId == null) return "Unknown";
+
+  const customer = customers.find(
+    (customer) => String(customer.id) === String(customerId)
+  );
+
+  return customer?.name ?? invoice.customer_name ?? "Unknown";
+};
+
 
   const totals = useMemo(() => {
-    const outstanding = invoices
-      .filter((invoice) => invoice.status !== "paid")
-      .reduce((sum, invoice) => sum + Number(invoice.amount), 0);
+  const outstanding = invoices
+    // Only include actionable unpaid or overdue invoices
+    .filter((invoice) => invoice.status === "unpaid" || invoice.status === "overdue")
+    .reduce((sum, invoice) => {
+      // Use balance or amount_due if available, otherwise fallback to amount
+      const val = Number(
+        invoice.balance ?? invoice.amount_due ?? invoice.amount ?? 0
+      );
+      return sum + (Number.isNaN(val) ? 0 : val);
+    }, 0);
 
-    const collected = invoices
-      .filter((invoice) => invoice.status === "paid")
-      .reduce((sum, invoice) => sum + Number(invoice.amount), 0);
+  const collected = invoices
+    .filter((invoice) => invoice.status === "paid")
+    .reduce((sum, invoice) => {
+      const val = Number(invoice.amount ?? 0);
+      return sum + (Number.isNaN(val) ? 0 : val);
+    }, 0);
 
-    return {
-      outstanding,
-      collected,
-      overdue: invoices.filter(
-        (invoice) => invoice.status === "overdue"
-      ).length,
-      unpaid: invoices.filter(
-        (invoice) => invoice.status === "unpaid"
-      ).length,
-    };
-  }, [invoices]);
+  return {
+    outstanding,
+    collected,
+    overdue: invoices.filter((invoice) => invoice.status === "overdue").length,
+    unpaid: invoices.filter((invoice) => invoice.status === "unpaid").length,
+  };
+}, [invoices]);
 
   const counts = useMemo(() => {
     const map = {
@@ -112,8 +129,9 @@ export function InvoicesPage() {
       }
 
       return (
-        invoice.reference.toLowerCase().includes(q) ||
-        customerName(invoice.customer_id).toLowerCase().includes(q)
+        String(invoice.reference ?? "")
+          .toLowerCase()
+          .includes(q) || customerName(invoice).toLowerCase().includes(q)
       );
     });
   }, [invoices, customers, filter, query]);
@@ -257,12 +275,12 @@ export function InvoicesPage() {
                     <Td>
                       <span className="flex items-center gap-2.5">
                         <Monogram
-                          name={customerName(invoice.customer_id)}
+                          name={customerName(invoice)}
                           className="h-8 w-8"
                         />
 
                         <span className="truncate">
-                          {customerName(invoice.customer_id)}
+                          {customerName(invoice)}
                         </span>
                       </span>
                     </Td>

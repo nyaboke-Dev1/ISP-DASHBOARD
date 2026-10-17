@@ -54,8 +54,21 @@ export function TicketsPage() {
   const tickets = data?.tickets ?? [];
   const customers = data?.customers ?? [];
 
-  const customerName = (id) =>
-    customers.find((c) => c.id === id)?.name ?? "Unknown";
+  
+const customerName = (ticket) => {
+  if (!ticket) return "Unknown";
+
+  return (
+    ticket.customer_name ??
+    customers.find(
+      (c) =>
+        String(c.id) ===
+        String(ticket.customer ?? ticket.customer_id)
+    )?.name ??
+    "Unknown"
+  );
+};
+
 
   const counts = useMemo(() => {
     const map = {
@@ -75,36 +88,52 @@ export function TicketsPage() {
       ticket.status !== "closed"
   ).length;
 
-  const rows = useMemo(() => {
-    const q = query.trim().toLowerCase();
+  
+const rows = useMemo(() => {
+  const q = query.trim().toLowerCase();
 
-    return tickets.filter((ticket) => {
-      if (
-        filter !== "all" &&
-        ticket.status !== filter
-      ) {
-        return false;
-      }
+  return tickets.filter((ticket) => {
+    // Apply the status filter first.
+    if (
+      filter !== "all" &&
+      ticket.status !== filter
+    ) {
+      return false;
+    }
 
-      if (!q) {
-        return true;
-      }
+    // Show every ticket when the search is empty.
+    if (!q) {
+      return true;
+    }
 
-      return (
-        ticket.reference.toLowerCase().includes(q) ||
-        ticket.subject.toLowerCase().includes(q) ||
-        customerName(ticket.customer_id)
-          .toLowerCase()
-          .includes(q)
-      );
-    });
-  }, [tickets, customers, filter, query]);
+    // Support both the backend and older frontend field names.
+    const reference = String(
+      ticket.reference ?? ticket.id ?? ""
+    );
 
-  const update = useWorkspaceAction(
-    ({ ticket, status }) =>
-      setTicketStatus(ticket, status, actor),
-    "Ticket updated"
-  );
+    const subject = String(ticket.subject ?? "");
+
+    const customer = String(
+      ticket.customer_name ??
+      customerName(ticket)
+    );
+
+    return (
+      reference.toLowerCase().includes(q) ||
+      subject.toLowerCase().includes(q) ||
+      customer.toLowerCase().includes(q)
+    );
+  });
+}, [tickets, customers, filter, query]);
+
+
+  
+
+const update = useWorkspaceAction(
+  ({ ticket, status }) =>
+    setTicketStatus(ticket.id, status),
+  "Ticket updated"
+);
 
   return (
     <AppShell>
@@ -262,14 +291,14 @@ export function TicketsPage() {
                         )}
                       </span>
 
-                      <span>{ticket.reference}</span>
+                      <span>Ticket #{ticket.id}</span>
 
                       <span>
                         {titleCase(ticket.priority)} priority
                       </span>
 
                       <span>
-                        Assigned to {ticket.assignee}
+                        Assigned to {ticket.assigned_to_name || "Unassigned"}
                       </span>
 
                       <span>

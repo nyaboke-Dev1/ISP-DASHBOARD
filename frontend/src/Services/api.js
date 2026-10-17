@@ -66,11 +66,17 @@ export const packagesAPI = {
     delete: (id) => api.delete(`/packages/${id}/`),
 }
 
+
+
 export const invoicesAPI = {
-  list:    (status = '') => api.get(`/invoices/${status ? `?status=${status}` : ''}`),
-  create:  (data)        => api.post('/invoices/', data),
-  markPaid: (id)         => api.patch(`/invoices/${id}/pay/`),
-}
+  list: () => api.get("/invoices/"),
+  create: (data) => api.post("/invoices/", data),
+  update: (id, data) => api.patch(`/invoices/${id}/`, data),
+  markPaid: (id) =>
+    api.post(`/invoices/${id}/mark-paid/`),
+};
+
+
 
 export const paymentsAPI = {
   list:   ()     => api.get('/payments/'),
@@ -78,11 +84,13 @@ export const paymentsAPI = {
 }
 
 export const ticketsAPI = {
-  list:   ()          => api.get('/tickets/'),
-  create: (data)      => api.post('/tickets/', data),
-  close:  (id)        => api.patch(`/tickets/${id}/close/`),
-  assign: (id, data)  => api.patch(`/tickets/${id}/assign/`, data),
-}
+  list:   () => api.get('/tickets/'),
+  create: (data) => api.post('/tickets/', data),
+  update: (id, data) => api.patch(`/tickets/${id}/`, data),
+  close:  (id) => api.patch(`/tickets/${id}/close/`),
+  assign: (id, data) => api.patch(`/tickets/${id}/assign/`, data),
+};
+
 
 export const networkAPI = {
   list: () => api.get('/network/usage/'),
@@ -92,5 +100,32 @@ export const networkAPI = {
 export const auditAPI = {
   list: () => api.get('/AuditLog/'),
 }
+
+export const settingsAPI = {
+  getProfile: () => api.get("/settings/profile/"),
+  updateProfile: (data) => api.patch("/settings/profile/", data),
+
+  getPreferences: () => api.get("/settings/preferences/"),
+  updatePreferences: (data) => api.patch("/settings/preferences/", data),
+
+  changePassword: (data) => api.post("/settings/change-password/", data),
+
+  getProfile: () => api.get("/settings/profile/"),
+  updateProfile: (data) => api.patch("/settings/profile/", data),
+
+  getOrganization: () => api.get("/settings/organization/"),
+  updateOrganization: (data) => api.patch("/settings/organization/", data),
+
+  getNotifications: () => api.get("/settings/notifications/"),
+  updateNotifications: (data) => api.patch("/settings/notifications/", data),
+
+  getPayments: () => api.get("/settings/payments/"),
+  updatePayments: (data) => api.patch("/settings/payments/", data),
+
+  changePassword: (data) => api.post("/settings/change-password/", data),
+
+  getOrganization: () => api.get("/settings/organization/"),
+  updateOrganization: (data) => api.patch("/settings/organization/", data),
+};
 
 export default api

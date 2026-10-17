@@ -83,10 +83,20 @@ export const togglePackageActive = (id) => packagesAPI.toggle(id)
 
 export const recordPayment = (data) => paymentsAPI.create(data)
 
-export const setInvoiceStatus = (id, status) => {
-  if (status === 'paid') return invoicesAPI.markPaid(id)
-  return invoicesAPI.create({ id, status })
-}
+
+
+export const setInvoiceStatus = (invoice, status) => {
+  const invoiceId =
+    typeof invoice === "object" ? invoice.id : invoice;
+
+  if (status === "paid") {
+    return invoicesAPI.markPaid(invoiceId);
+  }
+
+  return invoicesAPI.update(invoiceId, { status });
+};
+
+
 
 export const dateTime = (dateStr) => {
   if (!dateStr) return '—'
@@ -99,10 +109,22 @@ export const dateTime = (dateStr) => {
   })
 }
 
-export const setTicketStatus = (id, status) => {
-  if (status === 'closed') return ticketsAPI.close(id)
-  return ticketsAPI.assign(id, { status })
-}
+
+
+export const setTicketStatus = (ticketOrId, status) => {
+  const id =
+    typeof ticketOrId === "object" && ticketOrId !== null
+      ? ticketOrId.id
+      : ticketOrId;
+
+  if (id == null) {
+    throw new Error("Cannot update ticket: ticket ID is missing.");
+  }
+
+  return ticketsAPI.close(id);
+};
+
+
 
 export const initials = (name = '') =>
   name.split(' ').map((p) => p[0]).join('').slice(0, 2).toUpperCase()

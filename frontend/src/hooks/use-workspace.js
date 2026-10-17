@@ -3,12 +3,17 @@ import { toast } from "sonner";
 
 import { fetchWorkspace, workspaceQueryKey } from "@/lib/isp";
 import { useAuth } from "@/contexts/AuthContext";
+
 export function useWorkspace() {
   return useQuery({
     queryKey: workspaceQueryKey,
     queryFn: fetchWorkspace,
+    refetchInterval: 5000,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: true,
   });
 }
+
 
 export function useActorName() {
   const { user } = useAuth();

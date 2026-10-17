@@ -74,30 +74,46 @@ const dotClass = {
   neutral: "bg-muted-foreground",
 };
 
+
 export function statusTone(value) {
-  const v = value.toLowerCase();
+  const v = String(value ?? "unknown")
+    .toLowerCase()
+    .replace(/-/g, "_");
+
   if (["active", "paid", "closed", "low"].includes(v)) return "success";
   if (["unpaid", "pending", "open", "medium"].includes(v)) return "warning";
   if (["overdue", "suspended", "high"].includes(v)) return "danger";
   if (["in_progress", "in progress"].includes(v)) return "info";
+
   return "neutral";
 }
 
+
+
 export function StatusPill({ value, tone }) {
-  const resolved = tone ?? statusTone(value);
-  const label = value.replace(/_/g, " ");
+  const safeValue = String(value ?? "Unknown");
+  const resolved = tone ?? statusTone(safeValue);
+  const label = safeValue.replace(/_/g, " ");
+
   return (
     <span
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold capitalize",
-        toneClass[resolved],
+        toneClass[resolved] ?? toneClass.neutral,
       )}
     >
-      <span className={cn("h-1.5 w-1.5 rounded-full", dotClass[resolved])} aria-hidden="true" />
+      <span
+        className={cn(
+          "h-1.5 w-1.5 rounded-full",
+          dotClass[resolved] ?? dotClass.neutral,
+        )}
+        aria-hidden="true"
+      />
       {label}
     </span>
   );
 }
+
 
 export function PriorityDot({ priority }) {
   const tone = statusTone(priority);

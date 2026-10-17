@@ -34,14 +34,29 @@ export function AuthProvider({ children }) {
   }
 }, [token])
 
-  const login = async (username, password) => {
-    const res = await axios.post(`${API}/auth/login/`, { username, password })
-    const { access, refresh } = res.data
-    localStorage.setItem('access_token',  access)
-    localStorage.setItem('refresh_token', refresh)
-    setToken(access)
-    return res.data
+  
+const login = async (username, password) => {
+  const res = await axios.post(`${API}/auth/login/`, {
+    username,
+    password,
+  });
+
+  const { access, refresh } = res.data;
+
+  if (!access || !refresh) {
+    throw new Error(
+      "Login response did not contain access and refresh tokens."
+    );
   }
+
+  localStorage.setItem("access_token", access);
+  localStorage.setItem("refresh_token", refresh);
+
+  setToken(access);
+
+  return res.data;
+};
+
 
   const logout = async () => {
     try {

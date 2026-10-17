@@ -7,7 +7,9 @@ from datetime import timedelta
 
 from customers.models import Customer
 from packages.models import Package
-from payments.models import Invoice, Payment
+from payments.models import Payment
+from invoices.models import Invoice
+
 from tickets.models import Ticket
 from network.models import UsageStat
 

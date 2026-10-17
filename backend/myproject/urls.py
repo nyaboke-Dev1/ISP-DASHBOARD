@@ -18,9 +18,12 @@ urlpatterns = [
     # App endpoints
     path('api/customers/',  include('customers.urls')),
     path('api/packages/',   include('packages.urls')),
+    path("api/", include("invoices.urls")),
     path('api/',   include('payments.urls')),
     path('api/network/',    include('network.urls')),
     path('api/tickets/',    include('tickets.urls')),
     path('api/AuditLog/',  include('AuditLog.urls')),
     path('api/dashboard/', include('dashboard.urls')),
+    path("api/", include("subscriptions.urls")),
+    path("api/settings/", include("workspace_config.urls")),
 ]

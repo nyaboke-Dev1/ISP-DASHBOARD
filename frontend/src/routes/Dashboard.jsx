@@ -56,13 +56,74 @@ export default function Dashboard() {
   const usage = data?.usage ?? [];
   const tickets = data?.tickets ?? [];
 
-  const activeCustomers = customers.filter((c) => c.status === "active").length;
+  
+const getCustomerPackage = (customer) => {
+  const assigned =
+    customer.package ??
+    customer.package_id ??
+    customer.packageId;
+
+  if (assigned && typeof assigned === "object") {
+    return (
+      packages.find(
+        (pkg) =>
+          String(pkg.id) ===
+          String(assigned.id ?? assigned.pk)
+      ) ?? assigned
+    );
+  }
+
+  return packages.find(
+    (pkg) => String(pkg.id) === String(assigned)
+  );
+};
+
+const subscribedCustomers = customers.filter(
+  (customer) =>
+    customer.status === "active" &&
+    getCustomerPackage(customer)
+).length;
+
   const monthStart = new Date();
   monthStart.setDate(1);
   monthStart.setHours(0, 0, 0, 0);
-  const revenueThisMonth = payments
-    .filter((p) => new Date(p.paid_at) >= monthStart)
-    .reduce((sum, p) => sum + Number(p.amount), 0);
+  
+const monthlyPackagePrice = (pkg) => {
+  if (!pkg) return 0;
+
+  const price = Number(pkg.price) || 0;
+  const cycle = String(
+    pkg.billing_cycle ?? "monthly"
+  ).toLowerCase();
+
+  if (cycle.includes("year") || cycle.includes("annual")) {
+    return price / 12;
+  }
+
+  if (cycle.includes("quarter")) {
+    return price / 3;
+  }
+
+  if (cycle.includes("week")) {
+    return (price * 52) / 12;
+  }
+
+  if (cycle.includes("day")) {
+    return (price * 365) / 12;
+  }
+
+  return price;
+};
+
+const recurringRevenue = customers
+  .filter((customer) => customer.status === "active")
+  .reduce((total, customer) => {
+    return (
+      total +
+      monthlyPackagePrice(getCustomerPackage(customer))
+    );
+  }, 0);
+
   const overdue = invoices.filter((i) => i.status === "overdue");
   const overdueTotal = overdue.reduce((sum, i) => sum + Number(i.amount), 0);
   const openTickets = tickets.filter((t) => t.status !== "closed");
@@ -114,21 +175,23 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Active customers"
-          value={isPending ? "—" : String(activeCustomers)}
-          note={`${customers.length} accounts on the network`}
+          label="Subscribed customers"
+          value={isPending ? "—" : String(subscribedCustomers)}
+          note={`${customers.length} total customer accounts`}
           icon={Users}
           accent="primary"
           trend="up"
         />
+
         <MetricCard
-          label="Revenue this month"
-          value={isPending ? "—" : money(revenueThisMonth)}
-          note={`${payments.length} payments recorded`}
+          label="Monthly recurring revenue"
+          value={isPending ? "—" : money(recurringRevenue)}
+          note={`${subscribedCustomers} active subscriptions`}
           icon={Wallet}
           accent="success"
           trend="up"
         />
+
         <MetricCard
           label="Overdue invoices"
           value={isPending ? "—" : String(overdue.length)}
@@ -152,7 +215,10 @@ export default function Dashboard() {
             title="Network traffic"
             subtitle="Upload & download — last 7 days"
             action={
-              <Link to="/network" className="text-xs font-semibold text-primary hover:underline">
+              <Link
+                to="/network"
+                className="text-xs font-semibold text-primary hover:underline"
+              >
                 View details
               </Link>
             }
@@ -165,18 +231,27 @@ export default function Dashboard() {
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} barGap={4}>
-                  <CartesianGrid vertical={false} stroke="var(--color-border)" />
+                  <CartesianGrid
+                    vertical={false}
+                    stroke="var(--color-border)"
+                  />
                   <XAxis
                     dataKey="label"
                     tickLine={false}
                     axisLine={false}
-                    tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                    tick={{
+                      fontSize: 11,
+                      fill: "var(--color-muted-foreground)",
+                    }}
                   />
                   <YAxis
                     tickLine={false}
                     axisLine={false}
                     width={44}
-                    tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                    tick={{
+                      fontSize: 11,
+                      fill: "var(--color-muted-foreground)",
+                    }}
                     tickFormatter={(value) => `${Math.round(value / 1024)}GB`}
                   />
                   <Tooltip
@@ -194,8 +269,16 @@ export default function Dashboard() {
                     iconSize={8}
                     wrapperStyle={{ fontSize: "0.75rem", paddingTop: "0.5rem" }}
                   />
-                  <Bar dataKey="Download" fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="Upload" fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} />
+                  <Bar
+                    dataKey="Download"
+                    fill="var(--color-chart-1)"
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <Bar
+                    dataKey="Upload"
+                    fill="var(--color-chart-2)"
+                    radius={[4, 4, 0, 0]}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -214,14 +297,29 @@ export default function Dashboard() {
           />
           <div className="flex-1 space-y-4 px-4 py-4 sm:px-5">
             {packages.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No packages configured yet.</p>
+              <p className="text-sm text-muted-foreground">
+                No packages configured yet.
+              </p>
             ) : (
               packages.map((pkg) => {
-                const count = customers.filter((c) => c.package === pkg.id).length;
+                const count = customers.filter(
+                  (customer) =>
+                    customer.status === "active" &&
+                    String(
+                      customer.package?.id ??
+                        customer.package?.pk ??
+                        customer.package ??
+                        customer.package_id ??
+                        customer.packageId ??
+                        "",
+                    ) === String(pkg.id),
+                ).length;
                 return (
                   <div key={pkg.id}>
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
-                      <p className="truncate text-sm font-medium text-foreground">{pkg.name}</p>
+                      <p className="truncate text-sm font-medium text-foreground">
+                        {pkg.name}
+                      </p>
                       <p className="numeric text-xs text-muted-foreground">
                         {count} {count === 1 ? "subscriber" : "subscribers"}
                       </p>
@@ -229,11 +327,14 @@ export default function Dashboard() {
                     <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
                       <div
                         className="h-full rounded-full bg-primary"
-                        style={{ width: `${Math.max(4, (count / maxSubscribers) * 100)}%` }}
+                        style={{
+                          width: `${Math.max(4, (count / maxSubscribers) * 100)}%`,
+                        }}
                       />
                     </div>
                     <p className="mt-1.5 text-xs text-muted-foreground">
-                      {pkg.speed_mbps} Mbps · {money(pkg.price)} / {pkg.billing_cycle}
+                      {pkg.speed_mbps} Mbps · {money(pkg.price)} /{" "}
+                      {pkg.billing_cycle}
                     </p>
                   </div>
                 );
@@ -260,7 +361,9 @@ export default function Dashboard() {
             action={
               <button
                 type="button"
-                onClick={() => goToCustomers({ q: "", status: "all", pkg: "all", page: 1 })}
+                onClick={() =>
+                  goToCustomers({ q: "", status: "all", pkg: "all", page: 1 })
+                }
                 className="text-xs font-semibold text-primary hover:underline"
               >
                 View all
@@ -280,23 +383,32 @@ export default function Dashboard() {
               {customers.length === 0 ? (
                 <EmptyRow
                   colSpan={4}
-                  message={isPending ? "Loading customers…" : "No customers yet."}
+                  message={
+                    isPending ? "Loading customers…" : "No customers yet."
+                  }
                 />
               ) : (
                 customers.slice(0, 5).map((customer) => (
-                  <tr key={customer.id} className="transition-colors hover:bg-muted/50">
+                  <tr
+                    key={customer.id}
+                    className="transition-colors hover:bg-muted/50"
+                  >
                     <Td>
                       <div className="flex min-w-0 items-center gap-3">
                         <Monogram name={customer.name} />
                         <span className="min-w-0">
-                          <span className="block truncate text-sm font-medium">{customer.name}</span>
+                          <span className="block truncate text-sm font-medium">
+                            {customer.name}
+                          </span>
                           <span className="numeric block truncate text-xs text-muted-foreground">
                             {customer.phone}
                           </span>
                         </span>
                       </div>
                     </Td>
-                    <Td className="text-sm text-muted-foreground">{customer.location}</Td>
+                    <Td className="text-sm text-muted-foreground">
+                      {customer.location}
+                    </Td>
                     <Td className="text-sm">{packageName(customer.package)}</Td>
                     <Td className="text-right">
                       <StatusPill value={customer.status} />
@@ -313,7 +425,10 @@ export default function Dashboard() {
             title="Open tickets"
             subtitle="Need attention"
             action={
-              <Link to="/tickets" className="text-xs font-semibold text-primary hover:underline">
+              <Link
+                to="/tickets"
+                className="text-xs font-semibold text-primary hover:underline"
+              >
                 View all
               </Link>
             }

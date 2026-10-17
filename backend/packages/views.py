@@ -18,8 +18,8 @@ class PackageViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Package.objects.annotate(
-            subscriber_count=Count('customers')
-        ).all()
+        subscriber_count=Count('customers', distinct=True)
+    ).order_by('price')
 
     def get_serializer_class(self):
         return PackageSerializer

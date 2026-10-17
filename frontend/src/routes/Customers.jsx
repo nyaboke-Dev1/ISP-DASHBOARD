@@ -26,6 +26,18 @@ import {
   Th,
 } from "@/components/isp/ui";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -53,6 +65,8 @@ import {
   shortDate,
   titleCase,
   updateCustomerStatus,
+  updateCustomer,
+  deleteCustomer,
 } from "@/lib/isp";
 
 import {
@@ -93,8 +107,39 @@ function CustomersPage() {
 
   const packages = data?.packages ?? [];
 
-  const packageName = (id) =>
-    packages.find((p) => p.id === id)?.name ?? "No package";
+  // Handle package fields returned as an ID, a name, or a nested object.
+  const getCustomerPackageId = (customer) => {
+    const assignedPackage =
+      customer?.package_id ?? customer?.packageId ?? customer?.package;
+
+    if (assignedPackage && typeof assignedPackage === "object") {
+      return assignedPackage.id ?? assignedPackage.pk ?? "";
+    }
+
+    if (typeof assignedPackage === "string") {
+      const matched = packages.find(
+        (item) =>
+          String(item.id) === assignedPackage ||
+          String(item.name ?? item.title ?? item.package_name ?? "") === assignedPackage,
+      );
+      return matched?.id ?? assignedPackage;
+    }
+
+    return assignedPackage ?? "";
+  };
+
+  
+const packageName = (id) => {
+  if (id && typeof id === "object") {
+    id = id.id ?? id.pk ?? "";
+  }
+
+  return (
+    packages.find((p) => String(p.id) === String(id))?.name ??
+    "No package"
+  );
+};
+
 
   const filtered = useMemo(() => {
     const customers = data?.customers ?? [];
@@ -105,7 +150,7 @@ function CustomersPage() {
         return false;
       }
 
-      if (pkg !== "all" && String(customer.package_id) !== pkg) {
+      if (pkg !== "all" && String(getCustomerPackageId(customer)) !== pkg) {
         return false;
       }
 
@@ -123,7 +168,7 @@ function CustomersPage() {
         .toLowerCase()
         .includes(term);
     });
-  }, [data, q, status, pkg]);
+  }, [data, q, status, pkg, packages]);
 
   const pageCount = Math.max(
     1,
@@ -349,7 +394,7 @@ function CustomersPage() {
 
                   <Td>
                     <span className="inline-flex rounded-md bg-primary-soft px-2 py-1 text-[11px] font-semibold text-primary">
-                      {packageName(customer.package_id)}
+                      {packageName(getCustomerPackageId(customer))}
                     </span>
                   </Td>
 
@@ -421,6 +466,8 @@ function CustomersPage() {
         customer={selected}
         onClose={() => setSelected(null)}
         packageName={packageName}
+        getCustomerPackageId={getCustomerPackageId}
+
       />
     </AppShell>
   );
@@ -430,18 +477,39 @@ function CustomerDetail({
   customer,
   onClose,
   packageName,
+  getCustomerPackageId,
+
 }) {
+  const [isEditing, setIsEditing] = useState(false);
+
+  const [formData, setFormData] = useState({
+  name: "",
+  email: "",
+  phone: "",
+  location: "",
+  package_id: "",
+
+});
+
   const { data } = useWorkspace();
   const actor = useActorName();
 
   const statusAction = useWorkspaceAction(
     (status) =>
       updateCustomerStatus(
-        customer,
-        status,
-        actor
+        customer.id,status
       ),
     "Customer status updated"
+  );
+
+  const editAction = useWorkspaceAction(
+  (data) => updateCustomer(customer.id, data),
+  "Customer updated successfully"
+  );
+
+  const deleteAction = useWorkspaceAction(
+  () => deleteCustomer(customer.id),
+  "Customer deleted successfully"
   );
 
   const invoices = (data?.invoices ?? []).filter(
@@ -459,6 +527,37 @@ function CustomerDetail({
       ticket.customer_id === customer?.id
   );
 
+  
+async function handleSave(event) {
+  event.preventDefault();
+
+  try {
+    await editAction.mutateAsync({
+      ...formData,
+      package_id:
+        formData.package_id === ""
+          ? null
+          : Number(formData.package_id),
+    });
+
+    setIsEditing(false);
+  } catch {
+    // useWorkspaceAction already displays the error toast.
+  }
+}
+
+
+async function handleDelete() {
+  try {
+    await deleteAction.mutateAsync();
+    onClose();
+  } catch {
+    // useWorkspaceAction already displays the error toast.
+  }
+}
+
+
+
   return (
     <Sheet
       open={customer !== null}
@@ -468,41 +567,215 @@ function CustomerDetail({
         }
       }}
     >
-      <SheetContent
-        side="right"
-        className="w-full overflow-y-auto sm:max-w-md"
-      >
+      <SheetContent side="right" className="w-full overflow-y-auto sm:max-w-md">
         {customer ? (
           <>
-            <SheetHeader className="space-y-3">
-              <div className="flex items-center gap-3">
-                <Monogram
-                  name={customer.name}
-                  className="h-11 w-11 text-sm"
-                />
+            <SheetHeader className="space-y-4">
+              <div className="flex items-start gap-4">
+                <Monogram name={customer.name} />
 
-                <div className="min-w-0">
-                  <SheetTitle className="truncate">
+                <div className="min-w-0 flex-1 space-y-2">
+                  <SheetTitle className="break-words text-xl leading-tight">
                     {customer.name}
                   </SheetTitle>
 
-                  <SheetDescription>
-                    Customer since{" "}
-                    {longDate(customer.created_at)}
-                  </SheetDescription>
+                  <p className="text-sm text-muted-foreground">
+                    Customer since {longDate(customer.created_at)}
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2 pt-12">
                 <StatusPill value={customer.status} />
 
-                <span className="inline-flex rounded-md bg-primary-soft px-2 py-1 text-[11px] font-semibold text-primary">
-                  {packageName(customer.package_id)}
+                <span className="inline-flex max-w-full items-center rounded-full border px-3 py-1 text-xs font-medium">
+                  {packageName(getCustomerPackageId(customer))}
                 </span>
               </div>
             </SheetHeader>
 
-            <div className="mt-6 space-y-6">
+            <div className="mt-20 space-y-6">
+              {/* Edit and delete customer */}
+              {isEditing ? (
+                <form
+                  onSubmit={handleSave}
+                  className="space-y-4 rounded-xl border border-border p-4"
+                >
+                  <h3 className="text-sm font-semibold">
+                    Edit customer details
+                  </h3>
+
+                  <div className="space-y-1">
+                    <label htmlFor="edit-name" className="text-sm">
+                      Full name
+                    </label>
+                    <input
+                      id="edit-name"
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                      value={formData.name}
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label htmlFor="edit-email" className="text-sm">
+                      Email
+                    </label>
+                    <input
+                      id="edit-email"
+                      type="email"
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                      value={formData.email}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label htmlFor="edit-phone" className="text-sm">
+                      Phone
+                    </label>
+                    <input
+                      id="edit-phone"
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                      value={formData.phone}
+                      onChange={(e) =>
+                        setFormData({ ...formData, phone: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label htmlFor="edit-location" className="text-sm">
+                      Location
+                    </label>
+                    <input
+                      id="edit-location"
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                      value={formData.location}
+                      onChange={(e) =>
+                        setFormData({ ...formData, location: e.target.value })
+                      }
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label htmlFor="edit-package" className="text-sm">
+                      Package
+                    </label>
+                    <select
+                      id="edit-package"
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                      value={formData.package_id}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          package_id: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="">No package</option>
+                      {(data?.packages ?? []).map((pkg) => (
+                        <option key={pkg.id} value={pkg.id}>
+                          {pkg.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button type="submit" disabled={editAction.isPending}>
+                      {editAction.isPending ? "Saving..." : "Save changes"}
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setIsEditing(false)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              ) : (
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    className="flex-1"
+                    onClick={() => {
+                      setFormData({
+                        name: customer.name ?? "",
+                        email: customer.email ?? "",
+                        phone: customer.phone ?? "",
+                        location: customer.location ?? "",
+                        package_id: String(getCustomerPackageId(customer)),
+                      });
+                      setIsEditing(true);
+                    }}
+                  >
+                    Edit customer
+                  </Button>
+
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="text-danger"
+                        disabled={deleteAction.isPending}
+                      >
+                        Delete
+                      </Button>
+                    </AlertDialogTrigger>
+
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete customer?</AlertDialogTitle>
+
+                        <AlertDialogDescription>
+                          Are you sure you want to delete {customer.name}? This
+                          action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                        <AlertDialogAction
+                          onClick={(event) => {
+                            event.preventDefault();
+                            handleDelete();
+                          }}
+                          disabled={deleteAction.isPending}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          {deleteAction.isPending
+                            ? "Deleting..."
+                            : "Delete customer"}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+
+                  {/* <Button
+                    type="button"
+                    variant="outline"
+                    className="text-danger"
+                    disabled={deleteAction.isPending}
+                    onClick={handleDelete}
+                  >
+                    {deleteAction.isPending ? "Deleting..." : "Delete"}
+                  </Button> */}
+                </div>
+              )}
+
+              {/* Existing Contact section follows below */}
+
               {/* Contact */}
               <section className="space-y-2 rounded-xl border border-border p-4">
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -552,14 +825,9 @@ function CustomerDetail({
                     variant="outline"
                     className="gap-1.5"
                     disabled={statusAction.isPending}
-                    onClick={() =>
-                      statusAction.mutate("active")
-                    }
+                    onClick={() => statusAction.mutate("active")}
                   >
-                    <RotateCcw
-                      className="h-4 w-4"
-                      aria-hidden="true"
-                    />
+                    <RotateCcw className="h-4 w-4" aria-hidden="true" />
                     Reactivate
                   </Button>
                 ) : (
@@ -568,24 +836,16 @@ function CustomerDetail({
                     variant="outline"
                     className="gap-1.5 text-danger"
                     disabled={statusAction.isPending}
-                    onClick={() =>
-                      statusAction.mutate("suspended")
-                    }
+                    onClick={() => statusAction.mutate("suspended")}
                   >
-                    <Ban
-                      className="h-4 w-4"
-                      aria-hidden="true"
-                    />
+                    <Ban className="h-4 w-4" aria-hidden="true" />
                     Suspend
                   </Button>
                 )}
               </section>
 
               {/* Invoices */}
-              <DetailSection
-                title="Invoices"
-                empty="No invoices yet."
-              >
+              <DetailSection title="Invoices" empty="No invoices yet.">
                 {invoices.map((invoice) => (
                   <li
                     key={invoice.id}
@@ -613,10 +873,7 @@ function CustomerDetail({
               </DetailSection>
 
               {/* Payments */}
-              <DetailSection
-                title="Payments"
-                empty="No payments recorded."
-              >
+              <DetailSection title="Payments" empty="No payments recorded.">
                 {payments.map((payment) => (
                   <li
                     key={payment.id}
@@ -624,8 +881,7 @@ function CustomerDetail({
                   >
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium text-foreground">
-                        {payment.transaction_ref ||
-                          titleCase(payment.method)}
+                        {payment.transaction_ref || titleCase(payment.method)}
                       </p>
 
                       <p className="text-xs text-muted-foreground">
@@ -656,8 +912,8 @@ function CustomerDetail({
                       </p>
 
                       <p className="text-xs text-muted-foreground">
-                        {ticket.reference} ·{" "}
-                        {titleCase(ticket.priority)} priority
+                        {ticket.reference} · {titleCase(ticket.priority)}{" "}
+                        priority
                       </p>
                     </div>
 
