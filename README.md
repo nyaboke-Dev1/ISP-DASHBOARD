@@ -151,24 +151,6 @@ DB_PORT=5432
 
 > Never commit the `.env` file to version control.
 
----
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | `/api/auth/login/` | Obtain JWT token |
-| POST | `/api/auth/refresh/` | Refresh JWT token |
-| GET/POST | `/api/customers/` | List / create customers |
-| GET/PUT/DELETE | `/api/customers/<id>/` | Retrieve / update / delete customer |
-| GET/POST | `/api/packages/` | List / create packages |
-| GET/POST | `/api/invoices/` | List / create invoices |
-| GET/POST | `/api/payments/` | List / record payments |
-| GET | `/api/network/usage/` | Network usage stats |
-| GET/POST | `/api/tickets/` | List / create support tickets |
-| GET | `/api/audit-log/` | Audit log (read-only) |
-
----
 
 ## Database Models
 
@@ -182,30 +164,6 @@ DB_PORT=5432
 | `Ticket` | customer, subject, priority, status, assigned_to |
 | `AuditLog` | admin_user, action, target, ip_address, timestamp |
 
----
-
-## .gitignore
-
-Make sure your `.gitignore` includes:
-
-```
-# Backend
-backend/venv/
-backend/.env
-backend/__pycache__/
-backend/staticfiles/
-backend/media/
-
-# Frontend
-frontend/node_modules/
-frontend/dist/
-
-# General
-*.pyc
-.DS_Store
-```
-
----
 
 ## Author
 
