@@ -65,13 +65,13 @@ MIDDLEWARE = [
 
 ]
 CORS_ALLOWED_ORIGINS = [
-    https://isp-dashboard-7810qllhn-nyaboke-dev1s-projects.vercel.app/
+    "https://isp-dashboard-alpha.vercel.app/"
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
-    https://isp-dashboard-7810qllhn-nyaboke-dev1s-projects.vercel.app/
+    "https://isp-dashboard-alpha.vercel.app/"
 ]
 
 ROOT_URLCONF = 'myproject.urls'
