@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -115,8 +116,10 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # }
 DATABASES = {
     "default": dj_database_url.config(
-        default=config("postgresql://swift_net_user:eREDOnwcRLvU8MYoirseGTslzlfT8h8T@dpg-dbbpsv3l550s73fr0890-a/swift_net"),
+        default=os.environ.get("postgresql://swift_net_user:eREDOnwcRLvU8MYoirseGTslzlfT8h8T@dpg-dbbpsv3l550s73fr0890-a/swift_net"),
         conn_max_age=600,
+        conn_health_checks=True,
+
     )
 }
 
