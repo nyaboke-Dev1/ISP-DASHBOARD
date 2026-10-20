@@ -71,7 +71,7 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://isp-dashboard-alpha.vercel.app/"
+    "https://isp-dashboard-alpha.vercel.app"
 ]
 
 ROOT_URLCONF = 'myproject.urls'
