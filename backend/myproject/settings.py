@@ -27,8 +27,9 @@ SECRET_KEY = 'django-insecure-u4(ilv$+p=9e@=yh%4q^io701bpf_z9tq*2q-90$#p)@wn#y4w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    "isp-dashboard.onrender.com",
+]
 
 # Application definition
 
