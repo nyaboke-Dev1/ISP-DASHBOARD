@@ -103,15 +103,21 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'photo_gallery',
+#         'USER': 'admin',
+#         'PASSWORD': 'admin',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'photo_gallery',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    "default": dj_database_url.config(
+        default=config("postgresql://swift_net_user:eREDOnwcRLvU8MYoirseGTslzlfT8h8T@dpg-dbbpsv3l550s73fr0890-a/swift_net"),
+        conn_max_age=600,
+    )
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
