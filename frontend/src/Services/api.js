@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'
+const API = import.meta.env.VITE_API_BASE_URL 
 
 // ── Axios instance ────────────────────────────────────────────
 const api = axios.create({
@@ -40,9 +40,9 @@ api.interceptors.response.use(
 
 // ── Endpoints ─────────────────────────────────────────────────
 export const authAPI = {
-  login:   (data)         => api.post('/auth/login/',  data),
-  logout:  (refresh)      => api.post('/auth/logout/', { refresh }),
-  refresh: (refresh)      => api.post('/auth/refresh/', { refresh }),
+  login:   (data)         => api.post('api/auth/login/',  data),
+  logout:  (refresh)      => api.post('api/auth/logout/', { refresh }),
+  refresh: (refresh)      => api.post('api/auth/refresh/', { refresh }),
 }
 
 export const dashboardAPI = {
