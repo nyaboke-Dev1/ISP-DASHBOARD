@@ -118,10 +118,9 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # }
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.environ.get("postgresql://swift_net_user:eREDOnwcRLvU8MYoirseGTslzlfT8h8T@dpg-dbbpsv3l550s73fr0890-a/swift_net"),
+        default=os.environ.get("DATABASE_URL"),
         conn_max_age=600,
         conn_health_checks=True,
-
     )
 }
 
