@@ -140,7 +140,7 @@ function TopBar() {
     await queryClient.cancelQueries();
     queryClient.clear();
     await logout();
-    navigate("/auth", { replace: true });
+    navigate("/login", { replace: true });
   }
 
   return (
