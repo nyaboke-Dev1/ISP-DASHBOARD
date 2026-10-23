@@ -9,6 +9,13 @@ class PaymentSerializer(serializers.ModelSerializer):
         queryset=Invoice.objects.all(),
         required=False,
         allow_null=True,
+        
+    customer_id = serializers.PrimaryKeyRelatedField(
+    source="customer",
+    queryset=Customer.objects.all(),
+    write_only=True,
+    required=True,
+)    
     )
 
     class Meta:

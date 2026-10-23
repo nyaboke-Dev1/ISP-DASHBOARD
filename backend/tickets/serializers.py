@@ -1,11 +1,18 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Ticket
-
+from customers.models import Customer
 
 class TicketSerializer(serializers.ModelSerializer):
+    customer_id = serializers.PrimaryKeyRelatedField(
+    source="customer",
+    queryset=Customer.objects.all(),
+    write_only=True,
+    required=True,
+)
     customer_name  = serializers.CharField(source='customer.name',         read_only=True)
     assigned_to_name = serializers.CharField(source='assigned_to.username', read_only=True)
+    
 
     class Meta:
         model  = Ticket
