@@ -3,19 +3,18 @@ from .models import Payment
 from invoices.models import Invoice
 from customers.models import Customer
 class PaymentSerializer(serializers.ModelSerializer):
+    customer_id = serializers.PrimaryKeyRelatedField(
+        source="customer",
+        queryset=Customer.objects.all(),
+        write_only=True,
+        required=True,
+    ) 
     customer_name = serializers.CharField(source='customer.name', read_only=True)
     invoice_id    = serializers.PrimaryKeyRelatedField(
         source='invoice',
         queryset=Invoice.objects.all(),
         required=False,
         allow_null=True,
-        
-    customer_id = serializers.PrimaryKeyRelatedField(
-    source="customer",
-    queryset=Customer.objects.all(),
-    write_only=True,
-    required=True,
-)    
     )
 
     class Meta:
